@@ -1,0 +1,10 @@
+##Input parameters for MPRAcount
+
+export gitrepo_dir="/projects/tewhey-lab/MPRASuite"
+export jq_container="/projects/tewhey-lab/images/jq.sif"
+export mpra_oligo_container="/projects/tewhey-lab/images/mpra_oligo_barcode.sif"
+
+export mpramatch_dir="/path/to/MPRAmatch/output/directory"
+export acc_reps_file="/path/to/<library_name>_acc_id_reps.txt"
+export library_rerun_name="<folder_name_for_rerun>"
+export proj="<library_name>"

@@ -1,0 +1,9 @@
+{
+  "MPRAcount.parsed": "File",
+  "MPRAcount.acc_id": "File",
+  "MPRAcount.working_directory": "/projects/tewhey-lab/github/MPRASuite/MPRAcount/scripts",
+  "MPRAcount.out_directory":"String",
+  "MPRAcount.id_out": "String",
+  "MPRAcount.replicate_fastq": "Array[File]",
+  "MPRAcount.replicate_id": "Array[String]"
+}
