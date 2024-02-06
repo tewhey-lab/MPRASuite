@@ -1,4 +1,4 @@
-#MPRASuite - First Module: MPRAmatch (MPRA oligo/barcode reconstruction)
+# MPRASuite - First Module: MPRAmatch (MPRA oligo/barcode reconstruction)
 
 ## How the MPRAmatch pipeline work
 
@@ -28,6 +28,7 @@ If you are unable to run the pipeline via a container, then set up your environm
 
 ##The MPRASuite git repo directory structure; let's focus on MPRAmatch only:
 
+```
 		- cloned_repository/  
       - environment
       - graphics
@@ -63,20 +64,22 @@ If you are unable to run the pipeline via a container, then set up your environm
 
 ```
 
-##Step 1:
+## Step 1:
+
 * Clone Repo (or Pull Updated Repo):
 
-git clone https://github.com/tewhey-lab/MPRASuite.git
+  `git clone https://github.com/tewhey-lab/MPRASuite.git`
 
 
-##Step 2:
+## Step 2:
 * Create 'acc_id.txt' file:
 
-This file '<library_name>_acc_id.txt' should be manually created prior to creating the MPRAmatch specific config file (described in the next step).
+This file `<library_name>_acc_id.txt` should be manually created prior to creating the MPRAmatch specific config file (described in the next step).
 The text file should contain two columns; the first listing full paths to delta GFP files in fastq.gz format and the second column have the respective <library_name>_read_number. No column headers are required in the file.
 
 **NB: If the sequencing for read1 and read2 results in multiple files for both (i.e. multiple lanes or split between plates) when concatenating them into a single read1 file and read2 file make sure paired files are in the same order between both fastqs.** (read1 followed by read2 for same sample). Example:
 
+```
 /path/to/OL111_deltaGFP-A_GT23-13735_GACCAGGA-ATAGCCAG_S91_L007_R1_001.fastq.gz OL111_r1
 /path/to/OL111_deltaGFP-A_GT23-13735_GACCAGGA-ATAGCCAG_S91_L007_R2_001.fastq.gz OL111_r2
 /path/to/OL111_deltaGFP-B_GT23-13736_TGCTGCTG-ATGAGGAC_S92_L007_R1_001.fastq.gz OL111_r1
@@ -84,8 +87,11 @@ The text file should contain two columns; the first listing full paths to delta 
 /path/to/OL111_deltaGFP-B_GT23-13736_TGCTGCTG-ATGAGGAC_S92_L008_R1_001.fastq.gz OL111_r1
 /path/to/OL111_deltaGFP-B_GT23-13736_TGCTGCTG-ATGAGGAC_S92_L008_R2_001.fastq.gz OL111_r2
 
+```
 
-##Step 3: 
+
+## Step 3: 
+
 * Create MPRAmatch specific config file:
 
 Copy the below content and substitute the inputs for each parameter as required and save the file as, for example: OL111_MPRAmatch.config.
@@ -93,7 +99,7 @@ Copy the below content and substitute the inputs for each parameter as required 
 * Note: The variable 'proj' and 'library_rerun_name' can be the same string when running the pipeline with in-buit settings and parameter values, the variable 'library_rerun_name' can be changed when the library is analyzed for a different setting/parameter and the pipeline can be run with updated config file to create a new output folder with respective files.
 
 ```
-###Input parameters required for MPRAmatch
+### Input parameters required for MPRAmatch
 
 export gitrepo_dir="/path/to/MPRASuite/"
 export jq_container="/path/to/MPRASuite/images/jq.sif"
@@ -107,7 +113,7 @@ export library_rerun_name="<library_name>"
 
 ```
 
-##Step 4: 
+## Step 4: 
 * Run the MPRAmatch pipeline
 
 The command to execute the pipeline need 3 inputs; '-J' string for job name provided by the user which will be appended to the slurm standard error and output files to better tracking; absolute path to MPRAmatch_run.sh script within the git repo; absolute path the MPRAmatch.config file. This command can be executed directly from the terminal.
@@ -117,10 +123,10 @@ sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run
 
 ```
 
-##Step 5:
+## Step 5:
 * Quick QC - Manually check the json file (internally generated)
 
-The file MPRAmatch_<library_name>_inputs.json can be checked in the folder: YYMMDD-HHMMSS_<library_name>/execution/YYMMDD-HHMMSS_<library_name>_MPRAmatch/ . It is s good practice to make sure the default and user provided arguments in the config file have parsed successfully. An example of json file is below:
+The file `MPRAmatch_<library_name>_inputs.json` can be checked in the folder: `YYMMDD-HHMMSS_<library_name>/execution/YYMMDD-HHMMSS_<library_name>_MPRAmatch/` . It is s good practice to make sure the default and user provided arguments in the config file have parsed successfully. An example of json file is below:
 
 _MPRAmatch.wdl_
 
@@ -186,9 +192,9 @@ The output file from `MPRAmatch` needed as input for the `MPRAcount` pipeline ca
 
 
 
-** At any given point if the user would like to run/test the WDL pipeline as a standalone script for their library with a different setting or parameter applied to any tool or software, the json file generated above will be required as an argument to the below script.
+* At any given point if the user would like to run/test the WDL pipeline as a standalone script for their library with a different setting or parameter applied to any tool or software, the json file generated above will be required as an argument to the below script.
 
-**To submit to slurm** Make sure that you give the pipeline enough memory to run, if the pipeline fails the first time you run it, look at the end of the slurm output file to determine whether you need to give it more time or more memory
+* To submit to slurm** Make sure that you give the pipeline enough memory to run, if the pipeline fails the first time you run it, look at the end of the slurm output file to determine whether you need to give it more time or more memory
   * `sbatch -p compute -q batch -t 24:00:00 --mem=45GB -c 8 --wrap "cromwell run /path/to/MPRAmatch.wdl --inputs /path/to/MPRAmatch_<library_name>_inputs.json"` <br>
 
   * **OR** you can use the runscript and submission template below which utilizes the singularity container: <br>
@@ -223,6 +229,8 @@ The output file from `MPRAmatch` needed as input for the `MPRAcount` pipeline ca
 
   echo "Done"
   ```
+
+
 
 
 
