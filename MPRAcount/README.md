@@ -1,8 +1,8 @@
-#MPRAcount - Second Module: MPRAcount (Barcode counting pipeline)
+# MPRAcount - Second Module: MPRAcount (Barcode counting pipeline)
 
 ### Pipeline Flowchart
 
-[Graphical Pipeline](../graphics/MPRAcount_pipeline.svg)
+![Graphical Pipeline](../graphics/MPRAcount_pipeline.svg)
 
 * Tiled green object represents arrays of files and information passed to the pipeline, 
 * Turquoise object represents the output of the MPRAmatch pipeline, 
