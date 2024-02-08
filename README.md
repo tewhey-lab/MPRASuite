@@ -6,5 +6,5 @@ In order to develop the MPRAsuite we took the framework used by Tewhey et al (20
 ### Please see the below links associated to each of the three pipelines for detail documentation:
 
 * [MPRAmatch](./MPRAmatch/README.md) - MPRA oligo/barcode reconstruction
-* MPRAcount - MPRA barcode counting Pipeline
+* [MPRAcount](./MPRAcount/README.md) - MPRA barcode counting Pipeline
 * MPRAmodel - Statistical analysis and interpretation
