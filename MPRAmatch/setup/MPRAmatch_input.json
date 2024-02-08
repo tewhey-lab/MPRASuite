@@ -1,0 +1,16 @@
+{
+  "MPRAmatch.read_a": "File",
+  "MPRAmatch.read_b": "File",
+  "MPRAmatch.reference_fasta": "File",
+  "MPRAmatch.read_b_number": "2",
+  "MPRAmatch.read_len": "250",
+  "MPRAmatch.seq_min": "100",
+  "MPRAmatch.enh_min": "50",
+  "MPRAmatch.enh_max": "210",
+  "MPRAmatch.working_directory": "/projects/tewhey-lab/github/MPRASuite/MPRAmatch/scripts",
+  "MPRAmatch.out_directory": "String",
+  "MPRAmatch.id_out": "String",
+  "MPRAmatch.barcode_link": "TCTAGA",
+  "MPRAmatch.oligo_link": "AGTG",
+  "MPRAmatch.end_oligo_link": "CGTC"
+}
