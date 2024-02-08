@@ -2,13 +2,13 @@
 
 ### Pipeline Flowchart
 
-![Graphical Pipeline](graphics/MPRAmatch_pipeline.svg?raw=true "MPRAmatch Graphical Pipeline")
+[Graphical pipeline]("https://github.com/tewhey-lab/MPRASuite/blob/main/graphics/MPRAmatch_pipeline.svg")
 
 * Green objects represent files and information provided to the pipeline which are passed directly to a script or program, 
 * Blue objects are the calls to the modules called for above, 
 * Yellow objects refer to scripts written for the pipeline, 
 * Red is for barcode-oligo dictionary.
-
+  
 
 ### Pipeline Description
 
@@ -32,7 +32,7 @@ There are several optional inputs that can be changed based on a different libra
  - `MPRAmatch.end_oligo_link` : String, default to "CGTC". 4 bases indicating the oligo is no longer being sequenced
 
 
-### The MPRAMatch git repo directory structure in MPRAsuite :
+### MPRAmatch git repository directory structure in MPRASuite:
 
 ```
     - cloned_repository/  
@@ -69,14 +69,13 @@ If you are unable to run the pipeline via a container, then set up your environm
 * WDL does not get rid of intermediate files. The  pipelines are set up to relocate files that are important for later use from where the pipeline is run to a more permanent location. Consider running the pipeline in a scratch area so you don't have to go and delete other intermediate files after the pipeline completes itself. If you do opt to delete the files manually, please check that the relocation at the end of the pipeline has completed.
 
 
-## Steps to prepare and run MPRAmatch:
+# Steps to prepare and run MPRAmatch:
 
-1. Clone Repo (or Pull Updated repo):
+**1. Clone Repo (or Pull Updated repo):**
 
-`git clone https://github.com/tewhey-lab/MPRASuite.git`
+`  git clone https://github.com/tewhey-lab/MPRASuite.git  `
 
-
-2. Create `acc_id.txt` file (by the user):
+**2. Create `acc_id.txt` file (by the user):**
 
 This file `<library_name>_acc_id.txt` should be manually created prior to creating the MPRAmatch specific config file (described in the next step).
 The text file should contain two columns; the first listing full paths to delta GFP files in fastq.gz format and the second column have the respective <library_name>_read_number. No column headers are required in the file.
@@ -93,7 +92,7 @@ The text file should contain two columns; the first listing full paths to delta 
 
 ```
 
-3. Create MPRAmatch specific config file (by the user):
+**3. Create MPRAmatch specific config file (by the user):**
 
 Copy the below content and substitute the inputs for each parameter as required and save the file as, for example: `OL111_MPRAmatch.config` (see example below).
 
@@ -112,20 +111,21 @@ export library_rerun_name="<library_name>"
 
 ```
 
-4. Run the MPRAmatch pipeline:
+**4. Run the MPRAmatch pipeline:**
 
 The command to execute the pipeline need 3 inputs (see example below): 
 * '-J' string for job name provided by the user which will be appended to the slurm standard error and output files to better tracking,
 * absolute path to MPRAmatch_run.sh script within the git repo,
 * absolute path the MPRAmatch.config file. This command can be executed directly from the terminal.
 
-```sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
+```
+  sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
+
 ```
 
-5. Quick QC - Manually check the json file (intermediate file)
+**5. Quick QC - Manually check the json file (intermediate file):**
 
 The file `MPRAmatch_<library_name>_inputs.json` can be checked in the folder: `YYMMDD-HHMMSS_<library_name>/execution/YYMMDD-HHMMSS_<library_name>_MPRAmatch/` . It is a good practice to check and make sure the default and user provided arguments in the config file have parsed successfully. An example of `json` file is below:
-
 
 ```
 {
@@ -147,7 +147,7 @@ The file `MPRAmatch_<library_name>_inputs.json` can be checked in the folder: `Y
 
 ```
 
-6. Check the output folders:
+**6. Check the output folders:**
 
 Below is the output run directory organization chart:
 
@@ -171,34 +171,35 @@ Below is the output run directory organization chart:
 ```
 
 The output file from `MPRAmatch` needed as input for the `MPRAcount` pipeline can be found at:
-* Parsed File: `YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed`
+**Parsed File:** `YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed`
 
 
 ### Running WDL pipeline as a standalone script:
 
-At any given point if the user would like to run/test the WDL pipeline as a standalone script for their library with a different setting or parameter applied to any tool or software, the json file generated above will be required as an argument to the below script.
+At any given point if the user would like to run/test the WDL pipeline as a standalone script for their library with a different setting or parameter applied to any tool or          software, the json file generated above will be required as an argument to the below script.
 
-a. To submit to `slurm` from terminal:
+**a. To submit to `slurm` from terminal:**
 
-Make sure you give the pipeline enough memory to run, if the pipeline fails the first time you run it, look at the end of the slurm output file to determine whether you need to give it more time or more memory
+Make sure you give the pipeline enough memory to run, if the pipeline fails the first time you run it, look at the end of the slurm output file to determine whether you need to      give it more time or more memory
 
-`sbatch -p compute -q batch -t 24:00:00 --mem=45GB -c 8 --wrap "cromwell run /path/to/MPRAmatch.wdl --inputs /path/to/MPRAmatch_<library_name>_inputs.json"`
+` sbatch -p compute -q batch -t 24:00:00 --mem=45GB -c 8 --wrap "cromwell run /path/to/MPRAmatch.wdl --inputs /path/to/MPRAmatch_<library_name>_inputs.json"`
 
-b. To submit using the runscript:
+**b. To submit using the runscript:**
 
-  b1. Copy the below code and save it in a file named `MPRAmatch_call.sh`. Make sure to update the paths and locations.
+  **b1. Copy the below code and save it in a file named `MPRAmatch_call.sh`. Make sure to update the paths and locations.**
 
   Runscript:
 
   ```
   echo "Running Cromwell"
 
-  cromwell run /path/to/MPRASuite/MPRAmatch/MPRAmatch.wdl --inputs /path/to/YYMMDD-HHMMSS_<library_name>/execution/YYMMDD-HHMMSS_<library_name>_MPRAmatch/MPRAmatch_<library_name>_inputs.json
+  cromwell run /path/to/MPRASuite/MPRAmatch/MPRAmatch.wdl --inputs /path/to/YYMMDD-HHMMSS_<library_name>/execution/YYMMDD-               HHMMSS_<library_name>_MPRAmatch/MPRAmatch_<library_name>_inputs.json
 
   echo "Finished Cromwell"
   ```
 
-    b2. Copy the below code to create a submission template (for a SLURM based scheduler). Make sure to update the parameters: `--job-name=` with preferably the `library_name`, `--mail-user=` with the email id of the user, path to the container and runscript created above and save in a file, example MPRAmatch_run.sh. The below script can be submitted by running `sbatch /path/to/MPRAmatch_run.sh` 
+   **b2. Copy the below code to create a submission template (for a SLURM based scheduler):** 
+   Make sure to update the parameters: `--job-name=` with preferably the `library_name`, `--mail-user=` with the email id of the user, path to the container and runscript created       above and save in a file, example MPRAmatch_run.sh. The below script can be submitted by running `sbatch /path/to/MPRAmatch_run.sh` 
 
     ```
     #!/bin/bash
