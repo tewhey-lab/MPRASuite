@@ -169,8 +169,9 @@ Below is the output run directory organization chart:
     - slurm_logs
       - YYMMDD-HHMMSS_<library_name>_MPRAmatch_cromwell-workflow-logs
 ```
+Detail explanation of output files about their header and columns can be found [here](./output_file_explanations.md)
 
-The output file from `MPRAmatch` needed as input for the `MPRAcount` pipeline can be found at:
+The only output file from `MPRAmatch` needed as input for the `MPRAcount` pipeline can be found at:
 **Parsed File:** `YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed`
 
 
