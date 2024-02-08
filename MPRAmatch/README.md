@@ -2,7 +2,7 @@
 
 ### Pipeline Flowchart
 
-[Graphical pipeline]("https://github.com/tewhey-lab/MPRASuite/blob/main/graphics/MPRAmatch_pipeline.svg")
+[Graphical pipeline](https://github.com/tewhey-lab/MPRASuite/tree/071d2fd1b303e2f81d690ea3f36b17fb07223a6c/graphics)/MPRAmatch_pipeline.svg")
 
 * Green objects represent files and information provided to the pipeline which are passed directly to a script or program, 
 * Blue objects are the calls to the modules called for above, 
