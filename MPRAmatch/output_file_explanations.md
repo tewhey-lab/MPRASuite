@@ -1,8 +1,8 @@
-### A guide to output files for `MPRAmatch`
+## A guide to output files for `MPRAmatch`
 
-`MPRAmatch`
+# MPRAmatch
 
-  - `.merged.match`
+  **- `.merged.match`**
     1. Sequence ID
     2. Found Barcode Sequence
     3. Found Oligo Sequence
@@ -10,7 +10,7 @@
     5. Flashed Sequence Length
 
 
-  - `.merged.match.enh.mapped`
+  **- `.merged.match.enh.mapped`**
     1. Sequence ID
     2. Barcode
     3. Mapping flag from MiniMap2
@@ -27,7 +27,7 @@
     14. start/stop from mapping within reference oligo sequence
 
 
-  - `.merged.match.enh.mapped.barcode.ct`
+  **- `.merged.match.enh.mapped.barcode.ct`**
     1. Barcode
     2. Oligo(s) (comma separated if multiple oligos)
     3. individual seen (comma separated for each oligo)
@@ -43,7 +43,7 @@
     10. start/stop from mapping within reference oligo sequence (best for barcode-oligo combo)
 
 
-  - `.merged.match.enh.mapped.barcode.ct.parsed` <br>
+  **- `.merged.match.enh.mapped.barcode.ct.parsed`** <br>
   These columns are the same as for `.merged.match.enh.mapped.barcode.ct`. The barcodes that were identified as "conflict" (column 5 == 1) are checked for obvious pass/fail ratios.
 
 
