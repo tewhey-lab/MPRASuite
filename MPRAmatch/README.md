@@ -2,7 +2,7 @@
 
 ### Pipeline Flowchart
 
-![Graphical pipeline](../graphics/MPRAmatch_pipeline.svg")
+![Graphical pipeline](../graphics/MPRAmatch_pipeline.svg)
 
 * Green objects represent files and information provided to the pipeline which are passed directly to a script or program, 
 * Blue objects are the calls to the modules called for above, 
