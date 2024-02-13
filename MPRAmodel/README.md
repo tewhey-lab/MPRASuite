@@ -1,4 +1,4 @@
-# MPRA count analysis pipeline
+# MPRAmodel - Third Module in MPRASuite
 
 MPRAmodel.R:
       A series of functions to assist in analysis of MPRA count tables
