@@ -1,41 +1,50 @@
-# MPRAmatch - First Module in MPRASuite (MPRA oligo/barcode reconstruction)
+# MPRAmatch (MPRA Oligo/Barcode Reconstruction)
 
-### Pipeline Flowchart
+## Pipeline Flowchart
 
 ![Graphical pipeline](../graphics/MPRAmatch_pipeline.svg)
 
-* Green objects represent files and information provided to the pipeline which are passed directly to a script or program, 
-* Blue objects are the calls to the modules called for above, 
-* Yellow objects refer to scripts written for the pipeline, 
-* Red is for barcode-oligo dictionary.
-  
 
-### Pipeline Description
+* **Green** objects represent files and information provided to the pipeline, which are directly passed to a script or program.
+* **Blue** objects represent calls to the modules mentioned above.
+* **Yellow** objects denote scripts specifically designed for the pipeline.
+* **Red** objects represent the barcode-oligo dictionary.
 
-- The two fastq files from the initial barcode-oligo sequencing are fed into FLASH2 in order to merge them into a single fastq. 
-- The merged fastq is then passed to a script which pulls the barcode and oligo sequences for each record in the fastq based on the linker sequences between the barcode and oligo, and at the end of the oligo. 
-- The barcode/oligo pair information is rearranged into a FASTA format and passed to MiniMap2 along with the reference fasta. - The resulting SAM file is parsed for the Oligo name, barcode sequence, CIGAR, and error information for each mapped record. - The number of times each barcode appears for each oligo is then counted; the output is passed to preseq to determine sequencing depth, and parsed to resolve barcodes which map to multiple oligos.
+## Pipeline Description
 
-This pipeline is written in the Workflow Description Language (WDL) version 1.0, more info [here](https://github.com/openwdl/wdl).
+This pipeline is implemented in the **Workflow Description Language (WDL)** version 1.0. Further details on WDL can be found [here](https://github.com/openwdl/wdl).
 
+* The process begins with the input of two fastq files generated from the initial barcode-oligo sequencing, which are merged into a single fastq using FLASH2. * Subsequently, barcode and oligo sequences are extracted for each record in the merged fastq, based on the linker sequences between the barcode and oligo, as well as at the end of the oligo.
+* The extracted barcode/oligo pair information is then reformatted into FASTA format and provided to MiniMap2, along with the reference fasta.
+* The resulting SAM file is parsed to retrieve information such as Oligo name, barcode sequence, CIGAR, and error details for each mapped record.
+* Following this, the frequency of each barcode appearing for each oligo is determined.
+* The output is directed to preseq for sequencing depth analysis and further parsed to address instances where barcodes map to multiple oligos.
 
-### Parameters for MPRAmatch.wdl
+# For JAX users:
 
-There are several optional inputs that can be changed based on a different library preparation.
+JAX users must have access to the Sumner cluster. External collaborators will need additional support for setup, with further details provided in the document.
 
- - `MPRAmatch.read_len` : Integer, default to 250. Maximum length (in bp) of reads to be flashed
- - `MPRAmatch.seq_min` : Integer, default to 100. Minimum sequence length to pull for barcode
- - `MPRAmatch.enh_min` : Integer, default to 50. Minimum enhancer length to pull
- - `MPRAmatch.enh_max` : Integer, default to 210. Maximum enhancer length to pull
- - `MPRAmatch.barcode_link` : String, default to "TCTAGA". 6 bases at the barcode end of the sequence linking the barcode and oligo
- - `MPRAmatch.oligo_link` : String, default to "AGTG". 4 bases at the oligo end of the sequence linking the barcode and oligo
- - `MPRAmatch.end_oligo_link` : String, default to "CGTC". 4 bases indicating the oligo is no longer being sequenced
-
-
-### MPRAmatch git repository directory structure in MPRASuite:
+**1. Secure shell login to Sumner:**
 
 ```
-    - cloned_repository/  
+ssh login.sumner.jax.org
+```
+<br>
+**2. Clone Repo (or Pull Updated Repo):**
+
+```
+git clone https://github.com/tewhey-lab/MPRASuite.git && cd MPRASuite
+```
+<br>
+
+**3. **_QC-check:_** Check the MPRAmatch git repository directory structure :**
+
+To ensure proper cloning of the repository, please examine the directory structure provided below. <br>
+(**Note:** There are additional folders for other modules, but for the purpose of this instruction, focus on examining only the MPRAmatch folder.)
+<br>
+
+```
+    - MPRASuite/  
       - environment
       - graphics
       - LICENSE.txt
@@ -53,34 +62,22 @@ There are several optional inputs that can be changed based on a different libra
       - setup
 
 ```
+<br>
 
-## Setting up the environment:
+**4. Getting the input files ready:**
 
-We have the whole environment containerized, the definition file is available in the `environment/` folder of this repository.
+The user is responsible for manually generating two files namely ```<library_name>_acc_id.txt```and ```MPRAMatch_<library_name>.config```, which are required inputs for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct files are provided to the pipeline.
+<br>
 
-If you are unable to run the pipeline via a container, then set up your environment as described below:
+a.  **acc_id.txt:**
+<br>
 
-* Have modules for Cromwell, Womtool, FLASH2, minimap2 (version 2.17), preseq, pandas, reshape2, ggplot2, gridextra, and Biopython available (`.yml` of this conda enviornment can be found in the environment tab)
-  * `conda install -c bioconda cromwell womtool flash2 minimap2=2.17 preseq pandas samtools`
-  * `conda install -c conda-forge r-reshape2 r-ggplot2 r-gridextra biopython`
+The text file must contain two columns: the first column should include the full paths to delta GFP files (containing the sequences of the reporter gene (e.g., GFP) along with the regulatory elements (e.g., enhancers, promoters) being tested in the MPRA experiment) in fastq.gz format, while the second column should contain the respective <library_name>_read_number. Column headers are not required in the file.
 
-* Make sure the contents of the git repo once cloned are in a known directory (you will need to provide the path to this directory)
+<br>
 
-* WDL does not get rid of intermediate files. The  pipelines are set up to relocate files that are important for later use from where the pipeline is run to a more permanent location. Consider running the pipeline in a scratch area so you don't have to go and delete other intermediate files after the pipeline completes itself. If you do opt to delete the files manually, please check that the relocation at the end of the pipeline has completed.
+**Note:** If sequencing for read1 and read2 produces multiple files for both (e.g., multiple lanes or split between plates), ensure that paired files are in the same order between both fastqs when concatenating them into a single read1 file and read2 file (i.e., read1 followed by read2 for the same sample). Failure to maintain the correct order will cause FLASH2 to malfunction and therefore will affect the latter steps. 
 
-
-# Steps to prepare and run MPRAmatch:
-
-**1. Clone Repo (or Pull Updated repo):**
-
-`  git clone https://github.com/tewhey-lab/MPRASuite.git  `
-
-**2. Create `acc_id.txt` file (by the user):**
-
-This file `<library_name>_acc_id.txt` should be manually created prior to creating the MPRAmatch specific config file (described in the next step).
-The text file should contain two columns; the first listing full paths to delta GFP files in fastq.gz format and the second column have the respective <library_name>_read_number. No column headers are required in the file.
-
-**Note:** If the sequencing for read1 and read2 results in multiple files for both (i.e. multiple lanes or split between plates) when concatenating them into a single read1 file and read2 file make sure paired files are in the same order between both fastqs. (read1 followed by read2 for same sample). Example:
 
 ```
 /path/to/OL111_deltaGFP-A_GT23-13735_GACCAGGA-ATAGCCAG_S91_L007_R1_001.fastq.gz OL111_r1
@@ -91,12 +88,15 @@ The text file should contain two columns; the first listing full paths to delta 
 /path/to/OL111_deltaGFP-B_GT23-13736_TGCTGCTG-ATGAGGAC_S92_L008_R2_001.fastq.gz OL111_r2
 
 ```
+<br>
 
-**3. Create MPRAmatch specific config file (by the user):**
+b.  **MPRAmatch specific config file:**
+<br>
 
-Copy the below content and substitute the inputs for each parameter as required and save the file as, for example: `OL111_MPRAmatch.config` (see example below).
+Below is the provided content with parameters that can be substituted as needed. Save the file as, for instance, ```OL111_MPRAmatch.config``` (see example below). <br>
+**Note:** When executing the pipeline with built-in settings and parameter values, the variables proj and library_rerun_name may be the same string. However, if analyzing the library for different settings or parameters, library_rerun_name can be modified. Running the pipeline with the updated config file will generate a new output folder with corresponding files.
 
-**Note:** The variable `proj` and `library_rerun_name` can be the same string when running the pipeline with in-buit settings and parameter values, the variable `library_rerun_name` can be changed when the library is analyzed for a different setting/parameter and the pipeline can be run with updated config file to create a new output folder with respective files.
+<br>
 
 ```
 export gitrepo_dir="/path/to/MPRASuite/"
@@ -110,18 +110,72 @@ export results_dir="/path/to/desired/output/folder"
 export library_rerun_name="<library_name>"
 
 ```
+<br>
 
-**4. Run the MPRAmatch pipeline:**
+5. **Run the MPRAmatch pipeline, Default Method:**
 
-The command to execute the pipeline need 3 inputs (see example below): 
-* '-J' string for job name provided by the user which will be appended to the slurm standard error and output files to better tracking,
-* absolute path to MPRAmatch_run.sh script within the git repo,
-* absolute path the MPRAmatch.config file. This command can be executed directly from the terminal.
+The pipeline execution command requires three inputs (refer to the example below):
+
+A user-provided string for the job name (```-J```), which will be added to the slurm standard error and output file names for improved tracking.
+The absolute path to the ```MPRAmatch_run.sh``` script within the git repository.
+The absolute path to the ```MPRAmatch.config``` file. 
+This command can be executed directly from the terminal.
 
 ```
   sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
 
 ```
+<br>
+
+6. **Explore the output folder:**
+
+The output folder will be generated at the path specified in the config file (parameter ```results_dir```) with a date and time stamp appended to the folder name as a suffix followed by ```<library_name>```. Within the main parent folder, subfolders will be created namely ```execution```, ```inputs```, ```outputs```, and ```slurm_logs```. The pipeline output files for MPRAmatch can be located under ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/```.
+<br>
+
+```
+   - YYMMDD-HHMMSS_<library_name>/
+    - execution
+      - YYMMDD-HHMMSS_<library_name>_MPRAmatch
+        - cromwell-executions
+        - cromwell-workflow-logs
+        - MPRAmatch_<library_name>_inputs.json    
+        - MPRAmatch_<library_name>_call.sh
+    - inputs
+      - <library_name>_R1.fastq.gz
+      - <library_name>_R2.fastq.gz
+      - <library_name>_reference.fastq.gz
+    - outputs
+      - MPRAmatch
+        - <library_name>.merged.match.enh.mapped.barcode.ct.Parsed      #file needed for next module - MPRAcount
+    - slurm_logs
+      - YYMMDD-HHMMSS_<library_name>_MPRAmatch_cromwell-workflow-logs
+```
+<br>
+<br>
+Detailed explanations of the output files, including their headers and columns, can be found [here](./output_file_explanations.md).
+<br>
+
+The only output file required from the MPRAmatch module for the subsequent MPRAcount pipeline can be located at:
+<br>
+Parsed File: ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed```
+
+
+## Run the MPRAmatch pipeline, Alternate Method:**
+
+If the user intends to run or test the WDL pipeline independently for their library using different settings or parameters for any tool or software, the json file generated previously will need to be provided as an argument to the following script.
+
+### Parameters for MPRAmatch.wdl
+
+There are several optional inputs that can be changed based on a different library preparation.
+
+ - `MPRAmatch.read_len` : Integer, default to 250. Maximum length (in bp) of reads to be flashed
+ - `MPRAmatch.seq_min` : Integer, default to 100. Minimum sequence length to pull for barcode
+ - `MPRAmatch.enh_min` : Integer, default to 50. Minimum enhancer length to pull
+ - `MPRAmatch.enh_max` : Integer, default to 210. Maximum enhancer length to pull
+ - `MPRAmatch.barcode_link` : String, default to "TCTAGA". 6 bases at the barcode end of the sequence linking the barcode and oligo
+ - `MPRAmatch.oligo_link` : String, default to "AGTG". 4 bases at the oligo end of the sequence linking the barcode and oligo
+ - `MPRAmatch.end_oligo_link` : String, default to "CGTC". 4 bases indicating the oligo is no longer being sequenced
+
 
 **5. Quick QC - Manually check the json file (intermediate file):**
 
@@ -147,41 +201,9 @@ The file `MPRAmatch_<library_name>_inputs.json` can be checked in the folder: `Y
 
 ```
 
-**6. Check the output folders:**
-
-Below is the output run directory organization chart:
-
-```
-   - YYMMDD-HHMMSS_<library_name>/
-    - execution
-      - YYMMDD-HHMMSS_<library_name>_MPRAmatch
-        - cromwell-executions
-        - cromwell-workflow-logs
-        - MPRAmatch_<library_name>_inputs.json    #file we checked in Step 5
-        - MPRAmatch_<library_name>_call.sh
-    - inputs
-      - <library_name>_R1.fastq.gz
-      - <library_name>_R2.fastq.gz
-      - <library_name>_reference.fastq.gz
-    - outputs
-      - MPRAmatch
-        - <library_name>.merged.match.enh.mapped.barcode.ct.Parsed      #file needed for next module - MPRAcount
-    - slurm_logs
-      - YYMMDD-HHMMSS_<library_name>_MPRAmatch_cromwell-workflow-logs
-```
-Detail explanation of output files about their header and columns can be found [here](./output_file_explanations.md)
-
-The only output file from `MPRAmatch` needed as input for the `MPRAcount` pipeline can be found at:
-**Parsed File:** `YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed`
-
-
-### Running WDL pipeline as a standalone script:
-
-At any given point if the user would like to run/test the WDL pipeline as a standalone script for their library with a different setting or parameter applied to any tool or          software, the json file generated above will be required as an argument to the below script.
-
 **a. To submit to `slurm` from terminal:**
 
-Make sure you give the pipeline enough memory to run, if the pipeline fails the first time you run it, look at the end of the slurm output file to determine whether you need to      give it more time or more memory
+Make sure you give the pipeline enough memory to run, if the pipeline fails the first time you run it, look at the end of the slurm output file to determine whether you need to give it more time or more memory
 
 ` sbatch -p compute -q batch -t 24:00:00 --mem=45GB -c 8 --wrap "cromwell run /path/to/MPRAmatch.wdl --inputs /path/to/MPRAmatch_<library_name>_inputs.json"`
 
