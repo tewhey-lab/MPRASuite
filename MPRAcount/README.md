@@ -46,6 +46,7 @@ To ensure proper cloning of the repository, please examine the directory structu
       - example
       - graphics
       - LICENSE.txt
+      - README.md
       - MPRAcount
         - execution
         - MPRAcount.wdl
@@ -53,6 +54,8 @@ To ensure proper cloning of the repository, please examine the directory structu
         - README.md
         - scripts
         - setup
+     - MPRAmatch
+     - MPRAmodel
 
 ```
 <br>
