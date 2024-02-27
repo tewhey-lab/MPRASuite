@@ -55,7 +55,7 @@ done
 
 cp ${gitrepo_dir}/MPRAmatch/setup/MPRAmatch_input.json ${out}/MPRAmatch_${proj}_inputs.json
 
-singularity exec ${jq_container} jq --arg proj ${proj} --arg FLOC ${out}/inputs --arg OUT ${proj} -M '. + {"MPRAmatch.read_a":'\"${out}/inputs/${proj}_r1.fastq.gz\"', "MPRAmatch.read_b":'\"${out}/inputs/${proj}_r2.fastq.gz\"', "MPRAmatch.reference_fasta":'\"${out}/inputs/${proj}_reference.fasta.gz\"', "MPRAmatch.id_out":'\"${proj}\"',"MPRAmatch.out_directory":'\"${out}/outputs/MPRAmatch\"'}' ${out}/MPRAmatch_${proj}_inputs.json > ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json
+singularity exec ${mpra_container} jq --arg proj ${proj} --arg FLOC ${out}/inputs --arg OUT ${proj} -M '. + {"MPRAmatch.read_a":'\"${out}/inputs/${proj}_r1.fastq.gz\"', "MPRAmatch.read_b":'\"${out}/inputs/${proj}_r2.fastq.gz\"', "MPRAmatch.reference_fasta":'\"${out}/inputs/${proj}_reference.fasta.gz\"', "MPRAmatch.id_out":'\"${proj}\"',"MPRAmatch.working_directory":'\"${gitrepo_dir}/MPRAmatch/scripts\"',"MPRAmatch.out_directory":'\"${out}/outputs/MPRAmatch\"'}' ${out}/MPRAmatch_${proj}_inputs.json > ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json
 
 
 if [[ ! -f  ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json  && ! -s  ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json ]];then
@@ -84,7 +84,7 @@ echo "Loading Singularity Module"
 
 echo "Executing SIF with Code"
 
-singularity exec ${mpra_oligo_container} sh ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_call.sh
+singularity exec ${mpra_container} sh ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_call.sh
 
 echo "Done"
 
