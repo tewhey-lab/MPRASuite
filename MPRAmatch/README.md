@@ -30,6 +30,7 @@ JAX users must have access to the Sumner cluster. External collaborators will ne
 ssh login.sumner.jax.org
 ```
 <br>
+
 **2. Clone Repo (or Pull Updated Repo):**
 
 ```
@@ -112,7 +113,7 @@ export library_rerun_name="<library_name>"
 ```
 <br>
 
-5. **Run the MPRAmatch pipeline, Default Method:**
+**5. Run the MPRAmatch pipeline, Default Method:**
 
 The pipeline execution command requires three inputs (refer to the example below):
 
@@ -127,7 +128,7 @@ This command can be executed directly from the terminal.
 ```
 <br>
 
-6. **Explore the output folder:**
+ **6. Explore the output folder:**
 
 The output folder will be generated at the path specified in the config file (parameter ```results_dir```) with a date and time stamp appended to the folder name as a suffix followed by ```<library_name>```. Within the main parent folder, subfolders will be created namely ```execution```, ```inputs```, ```outputs```, and ```slurm_logs```. The pipeline output files for MPRAmatch can be located under ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/```.
 <br>
@@ -151,22 +152,22 @@ The output folder will be generated at the path specified in the config file (pa
       - YYMMDD-HHMMSS_<library_name>_MPRAmatch_cromwell-workflow-logs
 ```
 <br>
-<br>
 Detailed explanations of the output files, including their headers and columns, can be found [here](./output_file_explanations.md).
 <br>
 
 The only output file required from the MPRAmatch module for the subsequent MPRAcount pipeline can be located at:
 <br>
 Parsed File: ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed```
+<br>
 
+## Run the MPRAmatch pipeline (Step 5), Alternate Method:
+<br>
+This alternate methood can be implemented when the input values passed to the MPRAmatch WDL pipeline are different than what is set as default (please see below) due to a different library preparation. If the user intends to run or test the WDL pipeline independently for their constructed library, please follow the steps in the documentation located at: https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline 
 
-## Run the MPRAmatch pipeline, Alternate Method:**
+<br>
 
-If the user intends to run or test the WDL pipeline independently for their library using different settings or parameters for any tool or software, the json file generated previously will need to be provided as an argument to the following script.
-
-### Parameters for MPRAmatch.wdl
-
-There are several optional inputs that can be changed based on a different library preparation.
+```
+### Current parameters and values passed to the MPRAmatch WDL pipeline:
 
  - `MPRAmatch.read_len` : Integer, default to 250. Maximum length (in bp) of reads to be flashed
  - `MPRAmatch.seq_min` : Integer, default to 100. Minimum sequence length to pull for barcode
@@ -175,72 +176,5 @@ There are several optional inputs that can be changed based on a different libra
  - `MPRAmatch.barcode_link` : String, default to "TCTAGA". 6 bases at the barcode end of the sequence linking the barcode and oligo
  - `MPRAmatch.oligo_link` : String, default to "AGTG". 4 bases at the oligo end of the sequence linking the barcode and oligo
  - `MPRAmatch.end_oligo_link` : String, default to "CGTC". 4 bases indicating the oligo is no longer being sequenced
-
-
-**5. Quick QC - Manually check the json file (intermediate file):**
-
-The file `MPRAmatch_<library_name>_inputs.json` can be checked in the folder: `YYMMDD-HHMMSS_<library_name>/execution/YYMMDD-HHMMSS_<library_name>_MPRAmatch/` . It is a good practice to check and make sure the default and user provided arguments in the config file have parsed successfully. An example of `json` file is below:
-
-```
-{
-  "MPRAmatch.read_a": "/full/path/to/read/1.fastq.gz",
-  "MPRAmatch.read_b": "/full/path/to/read/2.fastq.gz",
-  "MPRAmatch.reference_fasta": "/full/path/to/reference/fasta.fa",
-  "MPRAmatch.working_directory": "/full/path/to/MPRASuite/MPRAmatch/scripts",
-  "MPRAmatch.out_directory": "/full/path/to/output/directory/"
-  "MPRAmatch.id_out": "<library_name>"
-  "MPRAmatch.read_b_number": "2",
-  "MPRAmatch.read_len": "250",
-  "MPRAmatch.seq_min": "100",
-  "MPRAmatch.enh_min": "50",
-  "MPRAmatch.enh_max": "210",
-  "MPRAmatch.barcode_link": "TCTAGA",
-  "MPRAmatch.oligo_link": "AGTG",
-  "MPRAmatch.end_oligo_link": "CGTC"
-}
-
 ```
 
-**a. To submit to `slurm` from terminal:**
-
-Make sure you give the pipeline enough memory to run, if the pipeline fails the first time you run it, look at the end of the slurm output file to determine whether you need to give it more time or more memory
-
-` sbatch -p compute -q batch -t 24:00:00 --mem=45GB -c 8 --wrap "cromwell run /path/to/MPRAmatch.wdl --inputs /path/to/MPRAmatch_<library_name>_inputs.json"`
-
-**b. To submit using the runscript:**
-
-  **b1. Copy the below code and save it in a file named `MPRAmatch_call.sh`. Make sure to update the paths and locations.**
-
-  Runscript:
-
-  ```
-  echo "Running Cromwell"
-
-  cromwell run /path/to/MPRASuite/MPRAmatch/MPRAmatch.wdl --inputs /path/to/YYMMDD-HHMMSS_<library_name>/execution/YYMMDD-               HHMMSS_<library_name>_MPRAmatch/MPRAmatch_<library_name>_inputs.json
-
-  echo "Finished Cromwell"
-  ```
-
-   **b2. Copy the below code to create a submission template (for a SLURM based scheduler):** 
-   Make sure to update the parameters: `--job-name=` with preferably the `library_name`, `--mail-user=` with the email id of the user, path to the container and runscript created       above and save in a file, example MPRAmatch_run.sh. The below script can be submitted by running `sbatch /path/to/MPRAmatch_run.sh` 
-
-    ```
-    #!/bin/bash
-    #SBATCH --job-name= <library_name>
-    #SBATCH -p compute # partition(this is the standard)
-    #SBATCH -q batch
-    #SBATCH -N 1 # number of nodes
-    #SBATCH -n 45 # number of cores
-    #SBATCH --mem 200GB # memory pool for all cores
-    #SBATCH -t 3-00:00 # time (D-HH:MM)
-    #SBATCH --mail-type=END,FAIL
-    #SBATCH --mail-user= <your_email_here>
-
-    echo "Loading Singularity Module"
-    module load singularity
-
-    echo "Executing SIF with Code"
-    singularity exec /path/to/your/built/container sh /path/to/runscript/MPRAmatch_call.sh
-    echo "Done"
-
-    ```
