@@ -43,20 +43,16 @@ To ensure proper cloning of the repository, please examine the directory structu
 
 ```
     - MPRASuite/  
-      - environment
+      - example
       - graphics
       - LICENSE.txt
       - MPRAcount
-        - example
         - execution
-        - MPRAmatch.wdl
+        - MPRAcount.wdl
         - output_file_explanations.md
         - README.md
         - scripts
         - setup
-      - README.md
-      - scripts
-      - setup
 
 ```
 <br>
@@ -105,14 +101,12 @@ Please copy the provided content and replace the inputs for each parameter as ne
 <br>
 
 ```
-export gitrepo_dir="/path/to/cloned/repo/MPRASuite"
-export jq_container="/path/to/images/jq.sif"
-export mpra_oligo_container="/path/to/images/mpra_oligo_barcode.sif"
+export gitrepo_dir="/path/to/repo/MPRASuite"
+export mpra_container="/projects/tewhey-lab/images/MPRASuite-MPRAmatch_MPRAcount_v1.sif"
 
-
-export mpramatch_dir="/path/to/MPRAmatch_output_dir YYMMDD-HHMMSS_<library_name>"
+export mpramatch_dir="/path/to/MPRAmatch/output/directory"
 export acc_reps_file="/path/to/<library_name>_acc_id_reps.txt"
-export library_rerun_name="<libray_name>"
+export library_rerun_name="<folder_name_for_rerun>"
 export proj="<library_name>"
 
 ```
@@ -168,7 +162,9 @@ Within the main parent folder carried over from the output of previous module MP
 
 ```
 <br>
-Detailed explanations of the output files, including their headers and columns, can be found [here](./output_file_explanations.md).
+
+Detailed explanations of the output files, including their headers and columns, can be found [here](https://github.com/tewhey-lab/MPRASuite/blob/main/MPRAcount/output_file_explanations.md).
+
 <br>
 
 The only output file required from the MPRAcount module for the subsequent MPRAmodel pipeline can be located at:
@@ -177,10 +173,9 @@ The only output file required from the MPRAcount module for the subsequent MPRAm
 * Condition file   : `- YYMMDD-HHMMSS_<library_name>/MPRAmatch/YYMMDD-HHMMSS_<library_name>_MPRAcount/<library_name>.condition.txt`
 <br>
 
-
 ## Run the MPRAcount pipeline (Step 5), Alternate Method:
 <br>
-This alternate methood can be implemented when the input values passed to the MPRAcount WDL pipeline are different than what is set as default (please see below) due to a different library preparation. If the user intends to run or test the WDL pipeline independently for their constructed library, please follow the steps in the documentation located at: https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline 
+This alternate methood can be implemented when the input values passed to the MPRAcount WDL pipeline are different than what is set as default (please see below) due to a different library preparation. If the user intends to run or test the WDL pipeline independently for their constructed library, please follow the steps in the documentation located at: https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline
 
 <br>
 
