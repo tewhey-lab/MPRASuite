@@ -45,22 +45,18 @@ To ensure proper cloning of the repository, please examine the directory structu
 <br>
 
 ```
-    - MPRASuite/  
-      - environment
+    - MPRASuite/
+      - example
       - graphics
       - LICENSE.txt
+      - README.md
       - MPRAmatch
-        - example
         - execution
         - MPRAmatch.wdl
         - output_file_explanations.md
         - README.md
         - scripts
         - setup
-      - output_file_explanations.md
-      - README.md
-      - scripts
-      - setup
 
 ```
 <br>
@@ -100,15 +96,14 @@ Below is the provided content with parameters that can be substituted as needed.
 <br>
 
 ```
-export gitrepo_dir="/path/to/MPRASuite/"
-export jq_container="/path/to/MPRASuite/images/jq.sif"
-export mpra_oligo_container="/path/to/MPRASuite/images/mpra_oligo_barcode.sif"
+export gitrepo_dir="/path/to/github/MPRASuite"
+export mpra_container="/projects/tewhey-lab/images/MPRASuite-MPRAmatch_MPRAcount_v1.sif"
 
 export acc_file="/path/to/<library_name>_acc_id.txt"
-export fasta="/path/to/<reference>.fa.gz"
+export fasta="/path/to/reference_fasta"
 export proj="<library_name>"
-export results_dir="/path/to/desired/output/folder" 
-export library_rerun_name="<library_name>"
+export results_dir="<path/to/desired/directory/for/results>" 
+export library_rerun_name="<librarary_name or folder_name_for_rerun>"
 
 ```
 <br>
