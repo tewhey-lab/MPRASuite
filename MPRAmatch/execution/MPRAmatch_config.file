@@ -1,11 +1,10 @@
 ##Input parameters for MPRAmatch
 
-export gitrepo_dir="/projects/tewhey-lab/github/MPRASuite"
-export jq_container="/projects/tewhey-lab/images/jq.sif"
-export mpra_oligo_container="/projects/tewhey-lab/images/mpra_oligo_barcode.sif"
+export gitrepo_dir="/path/to/github/MPRASuite"
+export mpra_container="/projects/tewhey-lab/images/MPRASuite-MPRAmatch_MPRAcount_v1.sif"
 
 export acc_file="/path/to/<library_name>_acc_id.txt"
 export fasta="/path/to/reference_fasta"
-export proj="<library name>"
+export proj="<library_name>"
 export results_dir="<path/to/desired/directory/for/results>" 
-export library_rerun_name="<folder_name_for_rerun>"
+export library_rerun_name="<librarary_name or folder_name_for_rerun>"
