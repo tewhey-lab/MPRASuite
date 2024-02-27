@@ -49,7 +49,6 @@ To ensure proper cloning of the repository, please examine the directory structu
       - example
       - graphics
       - LICENSE.txt
-      - README.md
       - MPRAmatch
         - execution
         - MPRAmatch.wdl
