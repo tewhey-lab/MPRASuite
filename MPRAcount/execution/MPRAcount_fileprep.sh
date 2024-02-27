@@ -44,7 +44,7 @@ pars="${mpramatch_outdir}/${proj}.merged.match.enh.mapped.barcode.ct.parsed"
 
 cp ${gitrepo_dir}/MPRAcount/setup/MPRAcount_input.json ${mpramatch_dir}/MPRAcount_${proj}_inputs.json
 
-singularity exec ${jq_container} jq --arg PROJ ${proj} --arg FLOC ${mpramatch_dir}/fastq --arg ACC ${acc_reps_file} --arg OUT ${proj} --arg ID ${id} --arg REPS ${reps} --arg PARS ${pars} -M '. + {"MPRAcount.out_directory":'\"${mpracount_outdir}\"', "MPRAcount.id_out":'\"${proj}\"', "MPRAcount.parsed":'\"${pars}\"', "MPRAcount.acc_id":'\"${acc_reps_file}\"', "MPRAcount.replicate_fastq":'\[$reps\]', "MPRAcount.replicate_id":'\[$id\]'}' ${mpramatch_dir}/MPRAcount_${proj}_inputs.json > ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json
+singularity exec ${mpra_container} jq --arg PROJ ${proj} --arg FLOC ${mpramatch_dir}/fastq --arg ACC ${acc_reps_file} --arg OUT ${proj} --arg ID ${id} --arg REPS ${reps} --arg PARS ${pars} -M '. + {"MPRAcount.out_directory":'\"${mpracount_outdir}\"',"MPRAcount.working_directory":'\"${gitrepo_dir}/MPRAcount/scripts\"',"MPRAcount.id_out":'\"${proj}\"', "MPRAcount.parsed":'\"${pars}\"', "MPRAcount.acc_id":'\"${acc_reps_file}\"', "MPRAcount.replicate_fastq":'\[$reps\]', "MPRAcount.replicate_id":'\[$id\]'}' ${mpramatch_dir}/MPRAcount_${proj}_inputs.json > ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json
 
 
 #*************Step 3: Create MPRAcount_call script**********************************
@@ -68,7 +68,7 @@ module load singularity
 
 echo "Executing SIF with Code"
 
-singularity exec ${mpra_oligo_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
+singularity exec ${mpra_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
 
 echo "Done"
 
@@ -87,6 +87,3 @@ echo "The concatenated plasmid and cell type replicate fastq files processed are
 echo "The JSON file with MPRAcount input parameters is located at: ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json" >> ${log_file}
 echo "The script to run the MPRAcount WDL pipeline is located at: ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh" >> ${log_file}
 echo "SLURM Job ID: ${SLURM_JOB_ID}" >> ${log_file}
-
-
-
