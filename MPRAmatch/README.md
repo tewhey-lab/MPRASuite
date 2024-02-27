@@ -147,7 +147,8 @@ The output folder will be generated at the path specified in the config file (pa
       - YYMMDD-HHMMSS_<library_name>_MPRAmatch_cromwell-workflow-logs
 ```
 <br>
-Detailed explanations of the output files, including their headers and columns, can be found [here](./output_file_explanations.md).
+
+Detailed explanations of the output files, including their headers and columns, can be found [here](https://github.com/tewhey-lab/MPRASuite/blob/main/MPRAmatch/output_file_explanations.md).
 <br>
 
 The only output file required from the MPRAmatch module for the subsequent MPRAcount pipeline can be located at:
@@ -157,7 +158,7 @@ Parsed File: ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.me
 
 ## Run the MPRAmatch pipeline (Step 5), Alternate Method:
 <br>
-This alternate methood can be implemented when the input values passed to the MPRAmatch WDL pipeline are different than what is set as default (please see below) due to a different library preparation. If the user intends to run or test the WDL pipeline independently for their constructed library, please follow the steps in the documentation located at: https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline 
+This alternate methood can be implemented when the input values passed to the MPRAmatch WDL pipeline are different than what is set as default (please see below) due to a different library preparation. If the user intends to run or test the WDL pipeline independently for their constructed library, please follow the steps in the documentation located at: https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline <br>
 
 <br>
 
