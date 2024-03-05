@@ -15,18 +15,7 @@
 The fastq files are processed concurrently, and the barcodes, along with the barcode-oligo dictionary, are transferred to a script that links the barcodes with their corresponding oligos. Subsequently, these files are forwarded to a script responsible for arranging the matched barcodes and oligos into a count table. This pipeline is implemented using Workflow Description Language (WDL) version 1.0. Further information can be found [here](https://github.com/openwdl/wdl)
 
 
-# For JAX users:
-
-JAX users must have access to the Sumner cluster. External collaborators will need additional support for setup, with further details provided in the document.
-
-**1. Secure shell login to Sumner:**
-
-```
-ssh login.sumner.jax.org
-```
-<br>
-
-**2. Clone Repo (or Pull Updated Repo):**
+**1. Clone Repo (or Pull Updated Repo):**
 <br>
 Refer to the repository cloned at the MPRAmatch step or clone again.
 
@@ -35,7 +24,7 @@ git clone https://github.com/tewhey-lab/MPRASuite.git && cd MPRASuite
 ```
 <br>
 
-**3. **_QC-check:_** Check the MPRAmatch git repository directory structure :**
+**2. **_QC-check:_** Check the MPRAmatch git repository directory structure :**
 
 To ensure proper cloning of the repository, please examine the directory structure provided below. <br>
 (**Note:** There are additional folders for other modules, but for the purpose of this instruction, focus on examining only the MPRAcount folder.)
@@ -60,7 +49,7 @@ To ensure proper cloning of the repository, please examine the directory structu
 ```
 <br>
 
-**4.  Getting the input files ready:**
+**3.  Getting the input files ready:**
 
 The user is responsible for manually generating two files namely ```<library_name>_acc_id_reps.txt```and ```MPRAcount_<library_name>.config```, which are required inputs for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct files are provided to the pipeline.
 <br>
@@ -115,7 +104,7 @@ export proj="<library_name>"
 ```
 <br>
 
-**5. Run the MPRAcount pipeline, Default Method:**
+**4. Run the MPRAcount pipeline, Default Method:**
 
 The pipeline execution command requires three inputs (refer to the example below):
 
@@ -125,13 +114,22 @@ The absolute path to the ```MPRAcount.config``` script.
 This command can be executed directly from the terminal.
 
 ```
-  sbatch -J "<library_name>" </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run.sh> </path/to/<library_name>_MPRAcount_config.file
 
-```
+# For JAX users:
+* Secure shell login to Sumner:
+
+ssh login.sumner.jax.org
+
+sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
+
+# For external users:
+bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
+
 <br>
 
+```
 
-**6. Explore the output folder:**
+**5. Explore the output folder:**
 
 The output folder will be generated under the folder specified in the config file (parameter ```mpramatch_dir```) with a date and time stamp appended to the folder name as a suffix followed by ```<library_name>```. <br>
 Within the main parent folder carried over from the output of previous module MPRAmatch in the format `YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/`, subfolder namely `YYMMDD-HHMMSS_<library_name>_MPRAcount/` will be created with the output files.
