@@ -20,25 +20,14 @@ This pipeline is implemented in the **Workflow Description Language (WDL)** vers
 * Following this, the frequency of each barcode appearing for each oligo is determined.
 * The output is directed to preseq for sequencing depth analysis and further parsed to address instances where barcodes map to multiple oligos.
 
-# For JAX users:
-
-JAX users must have access to the Sumner cluster. External collaborators will need additional support for setup, with further details provided in the document.
-
-**1. Secure shell login to Sumner:**
-
-```
-ssh login.sumner.jax.org
-```
-<br>
-
-**2. Clone Repo (or Pull Updated Repo):**
+**1. Clone Repo (or Pull Updated Repo):**
 
 ```
 git clone https://github.com/tewhey-lab/MPRASuite.git && cd MPRASuite
 ```
 <br>
 
-**3. **_QC-check:_** Check the MPRAmatch git repository directory structure :**
+**2. **_QC-check:_** Check the MPRAmatch git repository directory structure :**
 
 To ensure proper cloning of the repository, please examine the directory structure provided below. <br>
 (**Note:** There are additional folders for other modules, but for the purpose of this instruction, focus on examining only the MPRAmatch folder.)
@@ -63,7 +52,7 @@ To ensure proper cloning of the repository, please examine the directory structu
 ```
 <br>
 
-**4. Getting the input files ready:**
+**3. Getting the input files ready:**
 
 The user is responsible for manually generating two files namely ```<library_name>_acc_id.txt```and ```MPRAMatch_<library_name>.config```, which are required inputs for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct files are provided to the pipeline.
 <br>
@@ -110,7 +99,7 @@ export library_rerun_name="<librarary_name or folder_name_for_rerun>"
 ```
 <br>
 
-**5. Run the MPRAmatch pipeline, Default Method:**
+**4. Run the MPRAmatch pipeline, Default Method:**
 
 The pipeline execution command requires three inputs (refer to the example below):
 
@@ -120,12 +109,20 @@ The absolute path to the ```MPRAmatch.config``` file.
 This command can be executed directly from the terminal.
 
 ```
-  sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
+# For JAX users:
+* Secure shell login to Sumner:
+
+ssh login.sumner.jax.org
+
+sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
+
+# For external users:
+bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
 
 ```
 <br>
 
- **6. Explore the output folder:**
+ **5. Explore the output folder:**
 
 The output folder will be generated at the path specified in the config file (parameter ```results_dir```) with a date and time stamp appended to the folder name as a suffix followed by ```<library_name>```. Within the main parent folder, subfolders will be created namely ```execution```, ```inputs```, ```outputs```, and ```slurm_logs```. The pipeline output files for MPRAmatch can be located under ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/```.
 <br>
