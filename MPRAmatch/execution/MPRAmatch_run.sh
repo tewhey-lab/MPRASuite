@@ -24,7 +24,7 @@ mkdir -p ${out}/execution/
 mkdir -p ${out}/execution/${now}_${proj}_MPRAmatch
 mkdir -p ${out}/inputs
 mkdir -p ${out}/slurm_logs
-
+mkdir -p ${out}/setup
 
 slurm_logfile="${out}/slurm_logs/${SLURM_ARRAY_TASK_ID}.out"
 

@@ -35,6 +35,7 @@ echo $CMD
 cat $CMD > ${fastq_loc}/$i.fastq.gz
 done
 
+cp ${acc_reps_file} ${mpramatch_dir}/execution/${out}_MPRAcount/
 
 #************Step 2: Fill in the JSON file for MPRAcount****************************
 
@@ -42,9 +43,21 @@ id=`awk '{print $2}' ${acc_reps_file} | uniq | awk '{aggr=aggr",\""$1"\""} END {
 reps=`awk '{print $2}' ${acc_reps_file} | uniq | awk '{aggr=aggr",\"'${fastq_loc}'/"$1".fastq.gz\""} END {print aggr}' | sed 's/,//'`
 pars="${mpramatch_outdir}/${proj}.merged.match.enh.mapped.barcode.ct.parsed"
 
-cp ${gitrepo_dir}/MPRAcount/setup/MPRAcount_input.json ${mpramatch_dir}/MPRAcount_${proj}_inputs.json
+# Check if MPRAcount_json variable is set and not empty
+if [ -n "${MPRAcount_json}" ]; then
+  # Check if the file exists and is readable
+  if [ -r "${MPRAcount_json}" ]; then
+    echo "Using MPRAcount JSON: '$MPRAcount_json'"
+    cp "${MPRAcount_json}" "${mpramatch_dir}/MPRAcount_${proj}_inputs.json"
+  else
+    echo "Error: MPRAcount JSON file '${MPRAcount_json}' not found or not readable."
+  fi
+else
+  echo "Using default MPRAcount JSON: '${gitrepo_dir}/MPRAcount/setup/MPRAcount_input.json'"
+  cp "${gitrepo_dir}/MPRAcount/setup/MPRAcount_input.json" "${mpramatch_dir}/MPRAcount_${proj}_inputs.json"
+fi
 
-singularity exec ${mpra_container} jq --arg PROJ ${proj} --arg FLOC ${mpramatch_dir}/fastq --arg ACC ${acc_reps_file} --arg OUT ${proj} --arg ID ${id} --arg REPS ${reps} --arg PARS ${pars} -M '. + {"MPRAcount.out_directory":'\"${mpracount_outdir}\"',"MPRAcount.working_directory":'\"${gitrepo_dir}/MPRAcount/scripts\"',"MPRAcount.id_out":'\"${proj}\"', "MPRAcount.parsed":'\"${pars}\"', "MPRAcount.acc_id":'\"${acc_reps_file}\"', "MPRAcount.replicate_fastq":'\[$reps\]', "MPRAcount.replicate_id":'\[$id\]'}' ${mpramatch_dir}/MPRAcount_${proj}_inputs.json > ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json
+singularity exec ${mpra_container} jq --arg PROJ ${proj} --arg FLOC ${mpramatch_dir}/inputs --arg ACC ${acc_reps_file} --arg OUT ${proj} --arg ID ${id} --arg REPS ${reps} --arg PARS ${pars} -M '. + {"MPRAcount.out_directory":'\"${mpracount_outdir}\"',"MPRAcount.working_directory":'\"${gitrepo_dir}/MPRAcount/scripts\"',"MPRAcount.id_out":'\"${proj}\"', "MPRAcount.parsed":'\"${pars}\"', "MPRAcount.acc_id":'\"${acc_reps_file}\"', "MPRAcount.replicate_fastq":'\[$reps\]', "MPRAcount.replicate_id":'\[$id\]'}' ${mpramatch_dir}/MPRAcount_${proj}_inputs.json > ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json
 
 
 #*************Step 3: Create MPRAcount_call script**********************************
@@ -87,3 +100,10 @@ echo "The concatenated plasmid and cell type replicate fastq files processed are
 echo "The JSON file with MPRAcount input parameters is located at: ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json" >> ${log_file}
 echo "The script to run the MPRAcount WDL pipeline is located at: ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh" >> ${log_file}
 echo "SLURM Job ID: ${SLURM_JOB_ID}" >> ${log_file}
+
+#extracting the path to the illumina sequencing files released by GT from acc_id.txt file
+seq_filepath=$(cat ${acc_reps_file} | cut -f 1| head -n 1)
+seq_dir=$(dirname $seq_filepath)
+
+echo "The raw sequencing illumina fastq files for cell types released by GT are located at: ${seq_dir}"
+

@@ -8,3 +8,6 @@ export fasta="/path/to/reference_fasta"
 export proj="<library_name>"
 export results_dir="<path/to/desired/directory/for/results>" 
 export library_rerun_name="<librarary_name or folder_name_for_rerun>"
+
+#leave the variable blank if not providing customized json file,the pipeline will utilize the default parameters to generate the JSON and continue processing
+export MPRAmatch_json="<path/to/user/json/customized/file>"
