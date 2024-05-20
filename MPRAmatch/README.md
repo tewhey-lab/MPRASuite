@@ -166,7 +166,7 @@ This command can be executed directly from the terminal.
 
 ssh <login/to/cluster>
 
-bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run_non-slurm.sh> </path/to/<library_name>_MPRAmatch_config_non-slurm.file
+bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run_non-slurm.sh> </path/to/<library_name>_MPRAmatch_config.file
 
 ```
 <br>
