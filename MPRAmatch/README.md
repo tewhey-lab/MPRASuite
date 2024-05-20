@@ -54,7 +54,7 @@ To ensure proper cloning of the repository, please examine the directory structu
 
 **3. Creating MPRA SIF(singularity image file):**
 
-To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure haing singularity installed on your system and please follow the below commands:
+To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure having singularity installed on your system and please follow the below commands:
 
 **a. Pull the Docker image from Quay.io and convert into SIF file:**
 <br>
@@ -70,16 +70,16 @@ singularity run docker://quay.io/harshpreet_chandok/mprasuite:latest
 **b. Ensure the SIF file is created correctly:**
 <br>
 ```
-singularity inspect mprasuite_latest.sif
+./mprasuite.sif
 ```
 <br>
 
-This command will display metadata about the SIF file, such as the labels, environment variables, and run script. If the SIF file is valid and properly created, this command will return relevant information without any errors.
+
 <br>
 
 **4. Getting the input files ready:**
 
-The user is responsible for manually generating two files namely ```<library_name>_acc_id.txt```and ```MPRAMatch_<library_name>.config```, which are required inputs for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct files are provided to the pipeline.
+The user is responsible for manually generating two files namely ```<library_name>_acc_id.txt```and ```MPRAMatch_<library_name>.config```, which are required inputs for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct file names and formats (see below) are provided to the pipeline.
 <br>
 
 a.  **acc_id.txt:**
@@ -89,7 +89,7 @@ The text file must contain two columns: the first column should include the full
 
 <br>
 
-**Note:** If sequencing for read1 and read2 produces multiple files for both (e.g., multiple lanes or split between plates), ensure that paired files are in the same order between both fastqs when concatenating them into a single read1 file and read2 file (i.e., read1 followed by read2 for the same sample). Failure to maintain the correct order will cause FLASH2 to malfunction and therefore will affect the latter steps. 
+**Note:** If sequencing for read1 and read2 produces multiple files for both, (e.g., multiple lanes or split between plates), ensure that forward and reverse sequencing files for a given lane are listed together with forward files listed first:
 
 
 ```
@@ -106,8 +106,9 @@ The text file must contain two columns: the first column should include the full
 b.  **MPRAmatch specific config file:**
 <br>
 
-Below is the provided content with parameters that can be substituted as needed. Save the file as, for instance, ```OL111_MPRAmatch.config``` (see example below). <br>
-**Note:** When executing the pipeline with built-in settings and parameter values, the variables proj and library_rerun_name may be the same string. However, if analyzing the library for different settings or parameters, library_rerun_name can be modified. Running the pipeline with the updated config file will generate a new output folder with corresponding files.
+Below is the provided content with parameters that can be substituted as needed. Here we have named the file ```OL111_MPRAmatch.config``` , we recommend the following naming convention.  (see example below). <br>
+**Note:** When executing the pipeline with built-in settings and parameter values, the variables proj and library_rerun_name may be the same string. However, if analyzing the library for different settings or parameters, library_rerun_name can be modified. Running the pipeline with the updated config file will generate a new output folder with corresponding files.------ Add another paragraph about proj and library_name, 
+<br>
 We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly.
 
 <br>
@@ -123,7 +124,7 @@ export acc_file="/path/to/<library_name>_acc_id.txt"
 export fasta="/path/to/reference_fasta"
 export proj="<library_name>"
 export results_dir="<path/to/desired/directory/for/results>" 
-export library_rerun_name="<librarary_name or folder_name_for_rerun>"
+export library_rerun_name="<library_name or folder_name_for_rerun>" #run_folder
 
 #leave the variable blank if not providing customized json file,the pipeline will utilize the default parameters to generate the JSON and continue processing
 export MPRAmatch_json="<path/to/user/json/customized/file>"
@@ -134,7 +135,7 @@ export singularity="/path/to/installed/singularity"
 ```
 <br>
 
-**5A. Run the MPRAmatch pipeline on SLURM configuration:**
+**5A. Run the MPRAmatch pipeline on a SLURM cluster:**
 
 The pipeline execution command requires three inputs (refer to the example below):
 
@@ -144,16 +145,12 @@ The absolute path to the ```MPRAmatch.config``` file.
 This command can be executed directly from the terminal.
 
 ```
-* Secure shell login to Sumner:
-
-ssh <login/to/cluster>
-
 sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
 
 ```
 <br>
 
- **5B. Run the MPRAmatch pipeline on non-SLURM (any linux configuration):**
+ **5B. Run the MPRAmatch pipeline on a linux workstation:**
 
 The pipeline execution command requires two inputs (refer to the example below):
 
@@ -162,10 +159,6 @@ The absolute path to the ```MPRAmatch.config``` file.
 This command can be executed directly from the terminal.
 
 ```
-* Secure shell login to Sumner:
-
-ssh <login/to/cluster>
-
 bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run_non-slurm.sh> </path/to/<library_name>_MPRAmatch_config.file
 
 ```
@@ -199,7 +192,8 @@ The output folder will be generated at the path specified in the config file (pa
 Detailed explanations of the output files, including their headers and columns, can be found [here](https://github.com/tewhey-lab/MPRASuite/blob/main/MPRAmatch/output_file_explanations.md).
 <br>
 
-The only output file required from the MPRAmatch module for the subsequent MPRAcount pipeline can be located at:
+The only output file required from the MPRAmatch module for the subsequent MPRAcount pipeline will be located at:
 <br>
-Parsed File: ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed```
+<br>
+```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed```
 <br>
