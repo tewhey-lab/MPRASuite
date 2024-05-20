@@ -52,7 +52,32 @@ To ensure proper cloning of the repository, please examine the directory structu
 ```
 <br>
 
-**3. Getting the input files ready:**
+**3. Creating MPRA SIF(singularity image file):**
+
+To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure haing singularity installed on your system and please follow the below commands:
+
+**a. Pull the Docker image from Quay.io and convert into SIF file:**
+<br>
+Open a terminal and run the following command:
+
+<br>
+
+```
+singularity run docker://quay.io/harshpreet_chandok/mprasuite:latest
+```
+<br>
+
+**b. Ensure the SIF file is created correctly:**
+<br>
+```
+singularity inspect mprasuite_latest.sif
+```
+<br>
+
+This command will display metadata about the SIF file, such as the labels, environment variables, and run script. If the SIF file is valid and properly created, this command will return relevant information without any errors.
+<br>
+
+**4. Getting the input files ready:**
 
 The user is responsible for manually generating two files namely ```<library_name>_acc_id.txt```and ```MPRAMatch_<library_name>.config```, which are required inputs for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct files are provided to the pipeline.
 <br>
@@ -83,12 +108,16 @@ b.  **MPRAmatch specific config file:**
 
 Below is the provided content with parameters that can be substituted as needed. Save the file as, for instance, ```OL111_MPRAmatch.config``` (see example below). <br>
 **Note:** When executing the pipeline with built-in settings and parameter values, the variables proj and library_rerun_name may be the same string. However, if analyzing the library for different settings or parameters, library_rerun_name can be modified. Running the pipeline with the updated config file will generate a new output folder with corresponding files.
+We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly.
 
 <br>
 
 ```
+##Input parameters for MPRAmatch
+
 export gitrepo_dir="/path/to/github/MPRASuite"
-export mpra_container="/projects/tewhey-lab/images/MPRASuite-MPRAmatch_MPRAcount_v1.sif"
+#export mpra_container="/projects/tewhey-lab/images/MPRASuite-MPRAmatch_MPRAcount_v1.sif" (path on sumner)
+export mpra_container="/path/to/the/sif_file/from/docker"
 
 export acc_file="/path/to/<library_name>_acc_id.txt"
 export fasta="/path/to/reference_fasta"
@@ -96,10 +125,16 @@ export proj="<library_name>"
 export results_dir="<path/to/desired/directory/for/results>" 
 export library_rerun_name="<librarary_name or folder_name_for_rerun>"
 
+#leave the variable blank if not providing customized json file,the pipeline will utilize the default parameters to generate the JSON and continue processing
+export MPRAmatch_json="<path/to/user/json/customized/file>"
+
+#leave the variable blank if singularity is installed in the PATH
+export singularity="/path/to/installed/singularity"
+
 ```
 <br>
 
-**4. Run the MPRAmatch pipeline, Default Method:**
+**5A. Run the MPRAmatch pipeline on SLURM configuration:**
 
 The pipeline execution command requires three inputs (refer to the example below):
 
@@ -109,22 +144,36 @@ The absolute path to the ```MPRAmatch.config``` file.
 This command can be executed directly from the terminal.
 
 ```
-# For JAX users:
 * Secure shell login to Sumner:
 
-ssh login.sumner.jax.org
+ssh <login/to/cluster>
 
 sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
-
-# For external users:
-bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run.sh> </path/to/<library_name>_MPRAmatch_config.file
 
 ```
 <br>
 
- **5. Explore the output folder:**
+ **5B. Run the MPRAmatch pipeline on non-SLURM (any linux configuration):**
 
-The output folder will be generated at the path specified in the config file (parameter ```results_dir```) with a date and time stamp appended to the folder name as a suffix followed by ```<library_name>```. Within the main parent folder, subfolders will be created namely ```execution```, ```inputs```, ```outputs```, and ```slurm_logs```. The pipeline output files for MPRAmatch can be located under ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/```.
+The pipeline execution command requires two inputs (refer to the example below):
+
+The absolute path to the ```MPRAmatch_run.sh``` script within the git repository.
+The absolute path to the ```MPRAmatch.config``` file. 
+This command can be executed directly from the terminal.
+
+```
+* Secure shell login to Sumner:
+
+ssh <login/to/cluster>
+
+bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run_non-slurm.sh> </path/to/<library_name>_MPRAmatch_config_non-slurm.file
+
+```
+<br>
+ 
+ **6. Explore the output folder:**
+
+The output folder will be generated at the path specified in the config file (parameter ```results_dir```) with a date and time stamp appended to the folder name as a suffix followed by ```<library_name>```. Within the main parent folder, subfolders will be created namely ```execution```, ```inputs```, ```outputs```, and ```logs```. The pipeline output files for MPRAmatch can be located under ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/```.
 <br>
 
 ```
@@ -142,7 +191,7 @@ The output folder will be generated at the path specified in the config file (pa
     - outputs
       - MPRAmatch
         - <library_name>.merged.match.enh.mapped.barcode.ct.Parsed      #file needed for next module - MPRAcount
-    - slurm_logs
+    - logs
       - YYMMDD-HHMMSS_<library_name>_MPRAmatch_cromwell-workflow-logs
 ```
 <br>
@@ -154,22 +203,3 @@ The only output file required from the MPRAmatch module for the subsequent MPRAc
 <br>
 Parsed File: ```YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/<library_name>.merged.match.enh.mapped.barcode.ct.parsed```
 <br>
-
-## Run the MPRAmatch pipeline (Step 5), Alternate Method:
-<br>
-This alternate methood can be implemented when the input values passed to the MPRAmatch WDL pipeline are different than what is set as default (please see below) due to a different library preparation. If the user intends to run or test the WDL pipeline independently for their constructed library, please follow the steps in the documentation located at: https://github.com/tewhey-lab/MPRA_oligo_barcode_pipeline <br>
-
-<br>
-
-```
-### Current parameters and values passed to the MPRAmatch WDL pipeline:
-
- - `MPRAmatch.read_len` : Integer, default to 250. Maximum length (in bp) of reads to be flashed
- - `MPRAmatch.seq_min` : Integer, default to 100. Minimum sequence length to pull for barcode
- - `MPRAmatch.enh_min` : Integer, default to 50. Minimum enhancer length to pull
- - `MPRAmatch.enh_max` : Integer, default to 210. Maximum enhancer length to pull
- - `MPRAmatch.barcode_link` : String, default to "TCTAGA". 6 bases at the barcode end of the sequence linking the barcode and oligo
- - `MPRAmatch.oligo_link` : String, default to "AGTG". 4 bases at the oligo end of the sequence linking the barcode and oligo
- - `MPRAmatch.end_oligo_link` : String, default to "CGTC". 4 bases indicating the oligo is no longer being sequenced
-```
-
