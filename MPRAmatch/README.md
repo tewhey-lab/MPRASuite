@@ -156,7 +156,7 @@ sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run
 
 The pipeline execution command requires two inputs (refer to the example below):
 
-The absolute path to the ```MPRAmatch_run.sh``` script within the git repository.
+The absolute path to the ```MPRAmatch_run_non-slurm.sh``` script within the git repository.
 The absolute path to the ```MPRAmatch.config``` file. 
 This command can be executed directly from the terminal.
 
