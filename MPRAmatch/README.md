@@ -54,6 +54,7 @@ To ensure proper cloning of the repository, please examine the directory structu
 
 **3. Creating MPRA SIF(singularity image file):**
 
+MPRA image file will contain all the tools and their dependancies needed for the pipeline to analyze the datasets. 
 To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure having singularity installed on your system and please follow the below commands:
 
 **a. Pull the Docker image from Quay.io and convert into SIF file:**
@@ -73,10 +74,10 @@ singularity run docker://quay.io/harshpreet_chandok/mprasuite:latest
 ./mprasuite.sif
 ```
 <br>
-
+If the installation is successful, executing this command will list all the tools, software, and libraries along with their versions in the image file for better tracking. If no list is generated, there may be issues with the installation.
 
 <br>
-
+<br>
 **4. Getting the input files ready:**
 
 The user is responsible for manually generating two files namely ```<library_name>_acc_id.txt```and ```MPRAMatch_<library_name>.config```, which are required inputs for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct file names and formats (see below) are provided to the pipeline.
@@ -107,9 +108,10 @@ b.  **MPRAmatch specific config file:**
 <br>
 
 Below is the provided content with parameters that can be substituted as needed. Here we have named the file ```OL111_MPRAmatch.config``` , we recommend the following naming convention.  (see example below). <br>
-**Note:** When executing the pipeline with built-in settings and parameter values, the variables proj and library_rerun_name may be the same string. However, if analyzing the library for different settings or parameters, library_rerun_name can be modified. Running the pipeline with the updated config file will generate a new output folder with corresponding files.------ Add another paragraph about proj and library_name, 
+**Note:** The variables ```proj``` and ```library_rerun_name``` should be a string (library name) that will be appended to name the run folder. For example: ```231103-233906_OL111```. If the user runs the pipeline with default settings both variable can have the same string and ```OL111``` will be used as prefix to name all the output files. To run tests with different settings, you can rename only the main folder by appending a unique string to the library name ```library_rerun_name``` so that it can be differentiated with the other run folders in the directory (if any), all the output files will follow the ```proj``` passed by the user.
 <br>
-We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly.
+<br>
+*We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly.
 
 <br>
 
@@ -124,7 +126,7 @@ export acc_file="/path/to/<library_name>_acc_id.txt"
 export fasta="/path/to/reference_fasta"
 export proj="<library_name>"
 export results_dir="<path/to/desired/directory/for/results>" 
-export library_rerun_name="<library_name or folder_name_for_rerun>" #run_folder
+export library_rerun_name="<library_name or folder_name_for_rerun>" 
 
 #leave the variable blank if not providing customized json file,the pipeline will utilize the default parameters to generate the JSON and continue processing
 export MPRAmatch_json="<path/to/user/json/customized/file>"
