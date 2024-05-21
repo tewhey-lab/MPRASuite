@@ -78,6 +78,7 @@ If the installation is successful, executing this command will list all the tool
 
 <br>
 <br>
+
 **4. Getting the input files ready:**
 
 The user is responsible for manually generating two files namely ```<library_name>_acc_id.txt```and ```MPRAMatch_<library_name>.config```, which are required inputs for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct file names and formats (see below) are provided to the pipeline.
@@ -158,10 +159,19 @@ The pipeline execution command requires two inputs (refer to the example below):
 
 The absolute path to the ```MPRAmatch_run_non-slurm.sh``` script within the git repository.
 The absolute path to the ```MPRAmatch.config``` file. 
-This command can be executed directly from the terminal.
+This command can be executed <br>
+1. directly from the terminal (example below) which will display the standard outputs on the terminal itself.
+2. The same command can be run as a job in the background using ```nohup``` (example below) and the standard outputs can be saved to a log file. To check if the status of the job, use the command ```jobs``` on the terminal.
+<br>
 
 ```
+##1. To run on terminal
+
 bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run_non-slurm.sh> </path/to/<library_name>_MPRAmatch_config.file
+
+## 2. To save the standard output to a log file
+
+nohup bash </path/to/MPRASuite/MPRAmatch/execution/MPRAmatch_run_non-slurm.sh> </path/to/<library_name>_MPRAmatch_config.file > <path/to/MPRAmatch.log 2>&1 &
 
 ```
 <br>
