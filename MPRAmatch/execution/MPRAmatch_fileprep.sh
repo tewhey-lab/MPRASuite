@@ -43,7 +43,7 @@ fasta_name=$(basename ${fasta})
 if [[ "$fasta" =~ \.gz$ ]]; then
     echo "File '$fasta' is already zipped."
     # Rename the original file
-    mv "$fasta" ${out}/inputs/"${proj}_reference.fasta.gz"
+    cp "$fasta" ${out}/inputs/"${proj}_reference.fasta.gz"
     echo "Original file '$fasta' renamed to '${proj}_reference.fasta.gz'."
 else
     gzip "$fasta"
