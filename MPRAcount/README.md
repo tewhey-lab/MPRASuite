@@ -51,8 +51,9 @@ To ensure proper cloning of the repository, please examine the directory structu
 
 **3. Creating MPRA SIF(singularity image file):**
 
-(If not already installed from the previous step)
-MPRAmatch To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure haing singularity installed on your system and please follow the below commands:
+Please follow the steps below if the SIF file was not installed in the previous MPRAmatch step, if it is already installed, you can skip this section.
+<br>
+To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure haing singularity installed on your system and please follow the below commands:
 
 **a. Pull the Docker image from Quay.io and convert into SIF file:**
 <br>
@@ -68,11 +69,12 @@ singularity run docker://quay.io/harshpreet_chandok/mprasuite:latest
 **b. Ensure the SIF file is created correctly:**
 <br>
 ```
-singularity inspect mprasuite_latest.sif
+./mprasuite_latest.sif
 ```
 <br>
 
-This command will display metadata about the SIF file, such as the labels, environment variables, and run script. If the SIF file is valid and properly created, this command will return relevant information without any errors.
+If the installation is successful, executing this command will list all the tools, software, and libraries along with their versions in the image file for better tracking. If no list is generated, there may be issues with the installation.
+
 <br>
 
 
@@ -86,7 +88,7 @@ The user is responsible for manually generating two files namely ```<library_nam
 
 This file should consist of four columns listed below and can be saved in a file named `<library_name>_acc_id_reps.txt`. 
 
-1. Sample Ids
+1. Absolute paths to cell-type sequencing files
 2. Plasmid/cell-type replicate
 3. Biotype name (DNA for plasmid and cell type names for their respective cell-types)
 4. Type (DNA for Plasmid and RNA for cell-types).
@@ -115,8 +117,9 @@ OL111_Jurkat_r3_GT23-15044_CAACTCTC-GAGAAGAT_S29_R1_001.fastq.gz  Jurkat_r3  Jur
 
 Please copy the provided content and replace the inputs for each parameter as needed. Save the file with a name such as `OL111_MPRAcount.config` (refer to the example below).
 <br>
-**Note:** The variables `proj` and `library_rerun_name` can have the same string when running the pipeline with built-in settings and parameter values. However, `library_rerun_name` can be modified when analyzing the library with different settings or parameters. 
-We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly.
+**Note:** The variables ```proj``` and ```library_rerun_name``` should be a string (library name) that will be appended to name the run folder. For example: ```231103-233906_OL111```. If the user runs the pipeline with default settings both variable can have the same string and ```OL111``` will be used as prefix to name all the output files. To run tests with different settings, you can rename only the main folder by appending a unique string to the library name ```library_rerun_name``` so that it can be differentiated with the other run folders in the directory (if any), all the output files will follow the ```proj``` passed by the user.
+<br>
+*We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly.
 
 <br>
 
@@ -141,7 +144,7 @@ export singularity="/path/to/installed/singularity"
 ```
 <br>
 
-**5A. Run the MPRAcount pipeline on SLURM configuration:**
+**5A. Run the MPRAcount pipeline on a SLURM cluster:**
 
 The pipeline execution command requires three inputs (refer to the example below):
 
@@ -151,30 +154,20 @@ The absolute path to the ```MPRAcount.config``` file.
 This command can be executed directly from the terminal.
 
 ```
-* Secure shell login to Sumner:
-
-ssh <login/to/cluster>
-
 sbatch -J "<library_name>" </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run.sh> </path/to/<library_name>_MPRAcount_config.file
-
 ```
 <br>
 
- **5B. Run the MPRAcount pipeline on non-SLURM (any linux configuration):**
+ **5B. Run the MPRAcount pipeline on a linux workstation:**
 
 The pipeline execution command requires two inputs (refer to the example below):
 
-The absolute path to the ```MPRAcount_run.sh``` script within the git repository.
+The absolute path to the ```MPRAcount_run_non-slurm.sh``` script within the git repository.
 The absolute path to the ```MPRAcount.config``` file. 
 This command can be executed directly from the terminal.
 
 ```
-* Secure shell login to Sumner:
-
-ssh <login/to/cluster>
-
 bash </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run_non-slurm.sh> </path/to/<library_name>_MPRAcount_config.file
-
 ```
 <br>
  
@@ -218,7 +211,7 @@ Detailed explanations of the output files, including their headers and columns, 
 
 <br>
 
-The only output file required from the MPRAcount module for the subsequent MPRAmodel pipeline can be located at:
+The only output files required from the MPRAcount module for the subsequent MPRAmodel pipeline can be located at:
 <br>
 * Count File       : `- YYMMDD-HHMMSS_<library_name>/MPRAmatch/YYMMDD-HHMMSS_<library_name>_MPRAcount/<library_name>.count`
 * Condition file   : `- YYMMDD-HHMMSS_<library_name>/MPRAmatch/YYMMDD-HHMMSS_<library_name>_MPRAcount/<library_name>.condition.txt`
