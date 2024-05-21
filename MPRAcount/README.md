@@ -162,12 +162,23 @@ sbatch -J "<library_name>" </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run
 
 The pipeline execution command requires two inputs (refer to the example below):
 
-The absolute path to the ```MPRAcount_run_non-slurm.sh``` script within the git repository.
-The absolute path to the ```MPRAcount.config``` file. 
-This command can be executed directly from the terminal.
+The absolute path to the ```MPRAmatch_run_non-slurm.sh``` script within the git repository.
+The absolute path to the ```MPRAmatch.config``` file. 
+
+This command can be executed <br>
+1. directly from the terminal (example below) which will display the standard outputs on the terminal itself.
+2. The same command can be run as a job in the background using ```nohup``` (example below) and the standard outputs can be saved to a log file. To check if the status of the job, use the command ```jobs``` on the terminal.
+<br>
 
 ```
+##1. To run on terminal
+
 bash </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run_non-slurm.sh> </path/to/<library_name>_MPRAcount_config.file
+
+## 2. To save the standard output to a log file
+
+nohup bash </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run_non-slurm.sh> </path/to/<library_name>_MPRAcount_config.file > <path/to/MPRAcount.log 2>&1 &
+
 ```
 <br>
  
