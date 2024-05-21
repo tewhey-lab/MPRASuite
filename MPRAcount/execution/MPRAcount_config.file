@@ -1,9 +1,16 @@
 ##Input parameters for MPRAcount
 
 export gitrepo_dir="/path/to/repo/MPRASuite"
-export mpra_container="/projects/tewhey-lab/images/MPRASuite-MPRAmatch_MPRAcount_v1.sif"
+#export mpra_container="/projects/tewhey-lab/images/MPRASuite-MPRAmatch_MPRAcount_v1.sif" (path on sumer)
+export mpra_container="/path/to/the/sif_file/from/docker"
 
 export mpramatch_dir="/path/to/MPRAmatch/output/directory"
 export acc_reps_file="/path/to/<library_name>_acc_id_reps.txt"
 export library_rerun_name="<folder_name_for_rerun>"
 export proj="<library_name>"
+
+#leave the variable blank if not providing customized json file,the pipeline will utilize the default parameters to generate the JSON and continue processing
+export MPRAcount_json="<path/to/user/json/customized/file>"
+
+#leave the variable blank if singularity is installed in the PATH
+export singularity="/path/to/installed/singularity"
