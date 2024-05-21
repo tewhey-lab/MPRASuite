@@ -23,10 +23,10 @@ mkdir -p ${out}/outputs/MPRAmatch
 mkdir -p ${out}/execution/
 mkdir -p ${out}/execution/${now}_${proj}_MPRAmatch
 mkdir -p ${out}/inputs
-mkdir -p ${out}/slurm_logs
+mkdir -p ${out}/logs
 
 
-slurm_logfile="${out}/slurm_logs/${SLURM_ARRAY_TASK_ID}.out"
+slurm_logfile="${out}/logs/${SLURM_ARRAY_TASK_ID}.out"
 
 echo "Writing to ${slurm_logfile}"
 scontrol show -dd job $SLURM_JOB_ID
