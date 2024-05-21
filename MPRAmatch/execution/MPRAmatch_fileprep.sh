@@ -50,7 +50,7 @@ else
 
     if [ $? -eq 0 ]; then
         echo "File zipped successfully."
-        mv "${fasta}.gz" ${out}/inputs/"${proj}_reference.fasta.gz"
+        cp "${fasta}.gz" ${out}/inputs/"${proj}_reference.fasta.gz"
         echo "Original file '$fasta' renamed to '${proj}_reference.fasta.gz'."
     else
         echo "Error: Zip operation failed."
