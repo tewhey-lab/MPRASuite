@@ -66,4 +66,4 @@ echo "Total Memory: $(free -h | awk '/Mem/{print $2}') " >> ${logfile}
 echo "Disk Space: $(df -h / | awk 'NR==2{print $4}')" >> ${logfile}
 echo "Job PID is ${job_pid}" >> ${logfile}
 
-source ${gitrepo_dir}/MPRAmatch/execution/MPRAmatch_fileprep_non_slurm.sh ${out} ${proj} ${config_file} ${job_pid} ${singularity} >> ${logfile}
+source ${gitrepo_dir}/MPRAmatch/execution/MPRAmatch_fileprep_non-slurm.sh ${out} ${proj} ${config_file} ${job_pid} ${singularity} >> ${logfile}
