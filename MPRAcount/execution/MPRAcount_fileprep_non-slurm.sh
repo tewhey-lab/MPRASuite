@@ -3,8 +3,9 @@
 out=$1
 proj=$2
 config_file=$3
-job_pid=$4
-singularity=$5
+library_rerun_name=$4
+job_pid=$5
+singularity=$6
 
 source ${config_file}
 
@@ -71,18 +72,14 @@ echo -e "echo 'Finished Cromwell'" >> ${mpramatch_dir}/execution/${out}_MPRAcoun
 
 cd ${mpramatch_dir}/execution/${out}_MPRAcount/ 
 
-echo "Loading Singularity Module"
-
-module load singularity
-
 echo "Executing SIF with Code"
 
 if [ -n "${singularity}" ]; then
 "${singularity}" exec ${mpra_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
-echo "Done"
+echo "Done-singularity accessed from "$singularity" "
 else
 singularity exec ${mpra_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
-echo "Done"
+echo "Done-Singularity accessed from the PATH"
 fi
 
 
@@ -95,7 +92,7 @@ mv ${mpramatch_dir}/logs/.out ${mpramatch_dir}/logs/${now}_${proj}_MPRAcount_cro
 
 #*******************Step 6: Save status and location to output files to log file*******************
 
-echo "Results for the library analyzed ${proj} are located in directory ${out}" > ${log_file}
+echo "MPRAcount results for the library analyzed ${proj} are located in directory:  ${mpramatch_dir}/outputs/MPRAmatch/${out}_MPRAcount" > ${log_file}
 echo "The concatenated plasmid and cell type replicate fastq files processed are located a: ${fastq_loc}" >> ${log_file}
 echo "The JSON file with MPRAcount input parameters is located at: ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json" >> ${log_file}
 echo "The script to run the MPRAcount WDL pipeline is located at: ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh" >> ${log_file}
@@ -105,5 +102,5 @@ echo "Job ID: ${job_pid}" >> ${log_file}
 seq_filepath=$(cat ${acc_reps_file} | cut -f 1| head -n 1)
 seq_dir=$(dirname $seq_filepath)
 
-echo "The raw sequencing illumina fastq files for cell types released by GT are located at: ${seq_dir}"
+echo "The raw sequencing illumina fastq files for cell types released by GT are located at: ${seq_dir}" >> ${log_file}
 
