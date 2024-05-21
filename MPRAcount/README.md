@@ -5,7 +5,7 @@
 ![Graphical Pipeline](../graphics/MPRAcount_pipeline.svg)
 
 * **Tiled green** object represent arrays of files and information passed to the pipeline, 
-* **Turquoise** object represent the output of the MPRAmatch pipeline, 
+* **Turquoise** object represent the output of the MPRAcount pipeline, 
 * **Yellow** objects refer to scripts written for the pipeline, 
 * **Red** represents the final count table.
 
@@ -17,14 +17,14 @@ The fastq files are processed concurrently, and the barcodes, along with the bar
 
 **1. Clone Repo (or Pull Updated Repo):**
 <br>
-Refer to the repository cloned at the MPRAmatch step or clone again.
+Refer to the repository cloned in the previous step or else clone again.
 
 ```
 git clone https://github.com/tewhey-lab/MPRASuite.git && cd MPRASuite
 ```
 <br>
 
-**2. **_QC-check:_** Check the MPRAmatch git repository directory structure :**
+**2. **_QC-check:_** Check the MPRAcount git repository directory structure :**
 
 To ensure proper cloning of the repository, please examine the directory structure provided below. <br>
 (**Note:** There are additional folders for other modules, but for the purpose of this instruction, focus on examining only the MPRAcount folder.)
