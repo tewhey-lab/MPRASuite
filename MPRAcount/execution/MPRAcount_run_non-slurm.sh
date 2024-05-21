@@ -38,6 +38,13 @@ fi
 
 #####
 
+config_file=$1
+source ${config_file}
+
+now=$(date +"%y%m%d-%H%M%S")
+out=${now}_${library_rerun_name}
+###
+
 job_pid=$$
 logfile="${out}/logs/${proj}_${job_pid}.out"
 
@@ -47,14 +54,6 @@ echo "Number of CPUs: $(nproc)" >> ${logfile}
 echo "Total Memory: $(free -h | awk '/Mem/{print $2}') " >> ${logfile}
 echo "Disk Space: $(df -h / | awk 'NR==2{print $4}')" >> ${logfile}
 echo "Job PID is ${job_pid}" >> ${logfile}
-
-
-config_file=$1
-source ${config_file}
-
-now=$(date +"%y%m%d-%H%M%S")
-out=${now}_${library_rerun_name}
-
 
 source ${gitrepo_dir}/MPRAcount/execution/MPRAcount_fileprep_non-slurm.sh  ${out} ${proj} ${config_file} ${library_rerun_name} ${job_pid} ${singularity}
 
