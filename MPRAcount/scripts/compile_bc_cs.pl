@@ -49,7 +49,7 @@ if(exists($options{S}))
 else {$POS_flag = 0;}
 
 
-my $aln_cutoff = $options{A} || 0.05;
+my $aln_cutoff = defined($options{A}) ? $options{A} : 0.05;
 print STDERR "Using $aln_cutoff error rate for alignment cutoff\n";
 
 
