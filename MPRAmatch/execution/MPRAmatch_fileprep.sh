@@ -32,28 +32,48 @@ echo $CMD
 cat $CMD > ${fastq_loc}/$i.fastq.gz
 done
 
+cp ${acc_file} ${out}/execution/${now}_${proj}_MPRAmatch
 
-#********Step 2: Rename Fasta reference file with library name ************
+#********Step 2: Zip (if not already) and rename Fasta reference file with library name ************
 
 cp ${fasta} ${out}/inputs
 fasta_name=$(basename ${fasta})
-mv ${out}/inputs/${fasta_name} ${out}/inputs/${proj}_reference.fasta
-gzip ${out}/inputs/${proj}_reference.fasta 
 
-for file in ${out}/inputs/*gz
-do
-	echo "Checking status for file: '$file'"
-if [[ ! -f $file && ! -s $file ]];then
-	echo "$file not found or empty"
-  	exit 1
+# Check if the file provide is zipped or not
+if [[ "$fasta" =~ \.gz$ ]]; then
+    echo "File '$fasta' is already zipped."
+    # Rename the original file
+    mv "$fasta" ${out}/inputs/"${proj}_reference.fasta.gz"
+    echo "Original file '$fasta' renamed to '${proj}_reference.fasta.gz'."
+else
+    gzip "$fasta"
+
+    if [ $? -eq 0 ]; then
+        echo "File zipped successfully."
+        mv "${fasta}.gz" ${out}/inputs/"${proj}_reference.fasta.gz"
+        echo "Original file '$fasta' renamed to '${proj}_reference.fasta.gz'."
+    else
+        echo "Error: Zip operation failed."
+        exit 1
+    fi
 fi
-done
-
 
 #*******************Step 3: Fill in the match json file**********************
 
+# Check if MPRAmatch_json variable is set and not empty
+if [ -n "${MPRAmatch_json}" ]; then
+  # Check if the file exists and is readable
+  if [ -r "${MPRAmatch_json}" ]; then
+    echo "Using MPRAmatch JSON: '$MPRAmatch_json'"
+    cp "${MPRAmatch_json}" "${out}/MPRAmatch_${proj}_inputs.json"
+  else
+    echo "Error: MPRAmatch JSON file '${MPRAmatch_json}' not found or not readable."
+  fi
+else
+  echo "Using default MPRAmatch JSON: '${gitrepo_dir}/MPRAmatch/setup/MPRAmatch_input.json'"
+  cp "${gitrepo_dir}/MPRAmatch/setup/MPRAmatch_input.json" "${out}/MPRAmatch_${proj}_inputs.json"
+fi
 
-cp ${gitrepo_dir}/MPRAmatch/setup/MPRAmatch_input.json ${out}/MPRAmatch_${proj}_inputs.json
 
 singularity exec ${mpra_container} jq --arg proj ${proj} --arg FLOC ${out}/inputs --arg OUT ${proj} -M '. + {"MPRAmatch.read_a":'\"${out}/inputs/${proj}_r1.fastq.gz\"', "MPRAmatch.read_b":'\"${out}/inputs/${proj}_r2.fastq.gz\"', "MPRAmatch.reference_fasta":'\"${out}/inputs/${proj}_reference.fasta.gz\"', "MPRAmatch.id_out":'\"${proj}\"',"MPRAmatch.working_directory":'\"${gitrepo_dir}/MPRAmatch/scripts\"',"MPRAmatch.out_directory":'\"${out}/outputs/MPRAmatch\"'}' ${out}/MPRAmatch_${proj}_inputs.json > ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json
 
@@ -91,9 +111,9 @@ echo "Done"
 
 #***************Step 6: Copy WDL and Slurm log files***************************
 
-cp ${results_dir}/MPRAmatch-${proj}.${SLURM_JOB_ID}.out ${out}/slurm_logs
+cp ${results_dir}/MPRAmatch-${proj}.${SLURM_JOB_ID}.out ${out}/logs
 rm ${out}/MPRAmatch_${proj}_inputs.json
-mv ${out}/slurm_logs/.out ${out}/slurm_logs/${now}_${proj}_MPRAmatch_cromwell-workflow-logs
+mv ${out}/logs/.out ${out}/logs/${now}_${proj}_MPRAmatch_cromwell-workflow-logs
 #mv ${cmd}/cromwell-workflow-logs ${out}/execution/${now}_${proj}_MPRAmatch
 
 
@@ -106,3 +126,8 @@ echo "The JSON file with MPRAmatch input parameters is located at: ${out}/execut
 echo "The script to run the MPRAmatch WDL pipeline is located at: ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_call.sh" >> ${log_file}
 echo "SLURM Job ID: ${SLURM_JOB_ID}" >> ${log_file}
 
+#extracting the path to the illumina sequencing files released by GT from acc_id.txt file
+seq_filepath=$(cat ${acc_file} | cut -f 1| head -n 1)
+seq_dir=$(dirname $seq_filepath)
+
+echo "The raw sequencing illumina files released by GT are located at: ${seq_dir}"
