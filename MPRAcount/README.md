@@ -144,26 +144,12 @@ export singularity="/path/to/installed/singularity"
 ```
 <br>
 
-**5A. Run the MPRAcount pipeline on a SLURM cluster:**
-
-The pipeline execution command requires three inputs (refer to the example below):
-
-A user-provided string for the job name (```-J```), which will be added to the slurm standard error and output file names for improved tracking.
-The absolute path to the ```MPRAcount_run.sh``` script within the git repository.
-The absolute path to the ```MPRAcount.config``` file. 
-This command can be executed directly from the terminal.
-
-```
-sbatch -J "<library_name>" </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run.sh> </path/to/<library_name>_MPRAcount_config.file
-```
-<br>
-
- **5B. Run the MPRAcount pipeline on a linux workstation:**
+ **5A. Run the MPRAcount pipeline on a linux workstation:**
 
 The pipeline execution command requires two inputs (refer to the example below):
 
-The absolute path to the ```MPRAmatch_run_non-slurm.sh``` script within the git repository.
-The absolute path to the ```MPRAmatch.config``` file. 
+The absolute path to the ```MPRAcount_run.sh``` script within the git repository.
+The absolute path to the ```MPRAcount.config``` file. 
 
 This command can be executed <br>
 1. directly from the terminal (example below) which will display the standard outputs on the terminal itself.
@@ -173,15 +159,30 @@ This command can be executed <br>
 ```
 ##1. To run on terminal
 
-bash </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run_non-slurm.sh> </path/to/<library_name>_MPRAcount_config.file
+bash </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run.sh> </path/to/<library_name>_MPRAcount_config.file
 
 ## 2. To save the standard output to a log file
 
-nohup bash </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run_non-slurm.sh> </path/to/<library_name>_MPRAcount_config.file > <path/to/MPRAcount.log 2>&1 &
+nohup bash </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run.sh> </path/to/<library_name>_MPRAcount_config.file > <path/to/MPRAcount.log 2>&1 &
 
 ```
 <br>
  
+
+**5B. Run the MPRAcount pipeline on a SLURM cluster:**
+
+The pipeline execution command requires three inputs (refer to the example below):
+
+A user-provided string for the job name (```-J```), which will be added to the slurm standard error and output file names for improved tracking.
+The absolute path to the ```MPRAcount_run_slurm.sh``` script within the git repository.
+The absolute path to the ```MPRAcount.config``` file. 
+This command can be executed directly from the terminal.
+
+```
+sbatch -J "<library_name>" </path/to/MPRASuite/MPRAcount/execution/MPRAcount_run_slurm.sh> </path/to/<library_name>_MPRAcount_config.file
+```
+<br>
+
 
 **6. Explore the output folder:**
 
