@@ -1,10 +1,16 @@
 #!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 40
+#SBATCH --time=72:00:00
+#SBATCH --mem 200G
+#SBATCH --mail-user=harshpreet.chandok@jax.org	
+#SBATCH --mail-type=END,FAIL	
+#SBATCH --output=MPRAcount-%x.%j.out
+#SBATCH --error=MPRAcount-%x.%j.err	
 
 out=$1
 proj=$2
 config_file=$3
-job_pid=$4
-singularity=$5
 
 source ${config_file}
 
@@ -15,6 +21,8 @@ mkdir -p ${mpramatch_dir}/execution/${out}_MPRAcount
 mpracount_outdir=${mpramatch_outdir}/${out}_MPRAcount
 fastq_loc=${mpramatch_dir}/inputs
 log_file="${mpramatch_dir}/${out}_MPRAcount_log.txt"
+
+module load singularity
 
 #***********Step 1: Merge replicate fastq files for plasmid and cell types*********
 
@@ -49,12 +57,8 @@ else
   cp "${gitrepo_dir}/MPRAcount/setup/MPRAcount_input.json" "${mpramatch_dir}/MPRAcount_${proj}_inputs.json"
 fi
 
-if [ -n "${singularity}" ]; then
-"${singularity}" exec ${mpra_container} jq --arg PROJ ${proj} --arg FLOC ${mpramatch_dir}/inputs --arg ACC ${acc_reps_file} --arg OUT ${proj} --arg ID ${id} --arg REPS ${reps} --arg PARS ${pars} -M '. + {"MPRAcount.out_directory":'\"${mpracount_outdir}\"',"MPRAcount.working_directory":'\"${gitrepo_dir}/MPRAcount/scripts\"',"MPRAcount.id_out":'\"${proj}\"', "MPRAcount.parsed":'\"${pars}\"', "MPRAcount.acc_id":'\"${acc_reps_file}\"', "MPRAcount.replicate_fastq":'\[$reps\]', "MPRAcount.replicate_id":'\[$id\]'}' ${mpramatch_dir}/MPRAcount_${proj}_inputs.json > ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json
+singularity exec ${mpra_container} jq --arg PROJ ${proj} --arg FLOC ${mpramatch_dir}/inputs --arg ACC ${acc_reps_file} --arg OUT ${proj} --arg ID ${id} --arg REPS ${reps} --arg PARS ${pars} -M '. + {"MPRAcount.out_directory":'\"${mpracount_outdir}\"',"MPRAcount.working_directory":'\"${gitrepo_dir}/MPRAcount/scripts\"',"MPRAcount.id_out":'\"${proj}\"', "MPRAcount.parsed":'\"${pars}\"', "MPRAcount.acc_id":'\"${acc_reps_file}\"', "MPRAcount.replicate_fastq":'\[$reps\]', "MPRAcount.replicate_id":'\[$id\]'}' ${mpramatch_dir}/MPRAcount_${proj}_inputs.json > ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json
 
-else
-  singularity exec ${mpra_container} jq --arg PROJ ${proj} --arg FLOC ${mpramatch_dir}/inputs --arg ACC ${acc_reps_file} --arg OUT ${proj} --arg ID ${id} --arg REPS ${reps} --arg PARS ${pars} -M '. + {"MPRAcount.out_directory":'\"${mpracount_outdir}\"',"MPRAcount.working_directory":'\"${gitrepo_dir}/MPRAcount/scripts\"',"MPRAcount.id_out":'\"${proj}\"', "MPRAcount.parsed":'\"${pars}\"', "MPRAcount.acc_id":'\"${acc_reps_file}\"', "MPRAcount.replicate_fastq":'\[$reps\]', "MPRAcount.replicate_id":'\[$id\]'}' ${mpramatch_dir}/MPRAcount_${proj}_inputs.json > ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json
-fi
 
 #*************Step 3: Create MPRAcount_call script**********************************
 
@@ -77,19 +81,15 @@ module load singularity
 
 echo "Executing SIF with Code"
 
-if [ -n "${singularity}" ]; then
-"${singularity}" exec ${mpra_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
-echo "Done"
-else
 singularity exec ${mpra_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
+
 echo "Done"
-fi
 
 
-#*******************Step 5: Copy outputs**************************************
+#*******************Step 5: Copy Slurm outputs**************************************
 
 
-cp ${cmd}/MPRAcount-${proj}.${job_pid}.out ${mpramatch_dir}/logs
+cp ${cmd}/MPRAcount-${proj}.${SLURM_JOB_ID}.out ${mpramatch_dir}/logs
 rm ${mpramatch_dir}/MPRAcount_${proj}_inputs.json
 mv ${mpramatch_dir}/logs/.out ${mpramatch_dir}/logs/${now}_${proj}_MPRAcount_cromwell-workflow-logs
 
@@ -99,7 +99,7 @@ echo "Results for the library analyzed ${proj} are located in directory ${out}" 
 echo "The concatenated plasmid and cell type replicate fastq files processed are located a: ${fastq_loc}" >> ${log_file}
 echo "The JSON file with MPRAcount input parameters is located at: ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_inputs.json" >> ${log_file}
 echo "The script to run the MPRAcount WDL pipeline is located at: ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh" >> ${log_file}
-echo "Job ID: ${job_pid}" >> ${log_file}
+echo "SLURM Job ID: ${SLURM_JOB_ID}" >> ${log_file}
 
 #extracting the path to the illumina sequencing files released by GT from acc_id.txt file
 seq_filepath=$(cat ${acc_reps_file} | cut -f 1| head -n 1)

@@ -1,10 +1,16 @@
 #!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 40
+#SBATCH --time=72:00:00
+#SBATCH --mem 200G
+#SBATCH --mail-user=harshpreet.chandok@jax.org	
+#SBATCH --mail-type=BEGIN,END,FAIL	
+#SBATCH --output=MPRAmatch-%x.%j.out
+#SBATCH --error=MPRAmatch-%x.%j.err	
 
 out=$1
 proj=$2
 config_file=$3
-job_pid=$4
-singularity=$5
 
 source ${config_file}
 
@@ -12,6 +18,8 @@ cmd=${pwd}
 outdir=${out}/outputs/MPRAmatch
 fastq_loc=${out}/inputs
 log_file="${out}/${now}_${proj}_MPRAmatch_log.txt"
+
+module load singularity
 
 
 #*******************Step 1: Merge delta GFP Fastq files*******************
@@ -66,13 +74,15 @@ else
   cp "${gitrepo_dir}/MPRAmatch/setup/MPRAmatch_input.json" "${out}/MPRAmatch_${proj}_inputs.json"
 fi
 
-if [ -n "${singularity}" ]; then
-
-"${singularity}" exec ${mpra_container} jq --arg proj ${proj} --arg FLOC ${out}/inputs --arg OUT ${proj} -M '. + {"MPRAmatch.read_a":'\"${out}/inputs/${proj}_r1.fastq.gz\"', "MPRAmatch.read_b":'\"${out}/inputs/${proj}_r2.fastq.gz\"', "MPRAmatch.reference_fasta":'\"${out}/inputs/${proj}_reference.fasta.gz\"', "MPRAmatch.id_out":'\"${proj}\"',"MPRAmatch.working_directory":'\"${gitrepo_dir}/MPRAmatch/scripts\"',"MPRAmatch.out_directory":'\"${out}/outputs/MPRAmatch\"'}' ${out}/MPRAmatch_${proj}_inputs.json > ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json
-else 
 
 singularity exec ${mpra_container} jq --arg proj ${proj} --arg FLOC ${out}/inputs --arg OUT ${proj} -M '. + {"MPRAmatch.read_a":'\"${out}/inputs/${proj}_r1.fastq.gz\"', "MPRAmatch.read_b":'\"${out}/inputs/${proj}_r2.fastq.gz\"', "MPRAmatch.reference_fasta":'\"${out}/inputs/${proj}_reference.fasta.gz\"', "MPRAmatch.id_out":'\"${proj}\"',"MPRAmatch.working_directory":'\"${gitrepo_dir}/MPRAmatch/scripts\"',"MPRAmatch.out_directory":'\"${out}/outputs/MPRAmatch\"'}' ${out}/MPRAmatch_${proj}_inputs.json > ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json
+
+
+if [[ ! -f  ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json  && ! -s  ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json ]];then
+        echo "ERROR:MPRAmatch JSON file not found"
+        exit 1
 fi
+
 
 #*******************Step 4: Create the MPRAmatch_call script*******************
 
@@ -94,19 +104,14 @@ echo "Loading Singularity Module"
 
 echo "Executing SIF with Code"
 
-if [ -n "${singularity}" ]; then
+singularity exec ${mpra_container} sh ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_call.sh
 
-  ${singularity} exec ${mpra_container} sh ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_call.sh
-  echo "Done"
-else  
-  singularity exec ${mpra_container} sh ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_call.sh
-  echo "Done"
+echo "Done"
 
-fi
 
-#***************Step 6: Copy WDL and log files***************************
+#***************Step 6: Copy WDL and Slurm log files***************************
 
-cp ${results_dir}/MPRAmatch-${proj}.${job_pid}.out ${out}/logs
+cp ${results_dir}/MPRAmatch-${proj}.${SLURM_JOB_ID}.out ${out}/logs
 rm ${out}/MPRAmatch_${proj}_inputs.json
 mv ${out}/logs/.out ${out}/logs/${now}_${proj}_MPRAmatch_cromwell-workflow-logs
 #mv ${cmd}/cromwell-workflow-logs ${out}/execution/${now}_${proj}_MPRAmatch
@@ -119,7 +124,7 @@ echo "The concatenated delta GFP fastq files are located at: ${fastq_loc}" >> ${
 echo "The reference fasta file is located at: ${out}/inputs/${proj}_reference.fasta.gz" >> ${log_file}
 echo "The JSON file with MPRAmatch input parameters is located at: ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_inputs.json" >> ${log_file}
 echo "The script to run the MPRAmatch WDL pipeline is located at: ${out}/execution/${now}_${proj}_MPRAmatch/MPRAmatch_${proj}_call.sh" >> ${log_file}
-echo "Job ID: ${job_pid}" >> ${log_file}
+echo "SLURM Job ID: ${SLURM_JOB_ID}" >> ${log_file}
 
 #extracting the path to the illumina sequencing files released by GT from acc_id.txt file
 seq_filepath=$(cat ${acc_file} | cut -f 1| head -n 1)
