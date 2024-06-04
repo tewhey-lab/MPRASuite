@@ -7,7 +7,7 @@
   "MPRAmatch.seq_min": "100",
   "MPRAmatch.enh_min": "50",
   "MPRAmatch.enh_max": "210",
-  "MPRAmatch.working_directory": "/projects/tewhey-lab/github/MPRASuite/MPRAmatch/scripts",
+  "MPRAmatch.working_directory": "/path/to/MPRASuite/MPRAmatch/scripts",
   "MPRAmatch.out_directory": "String",
   "MPRAmatch.id_out": "String",
   "MPRAmatch.barcode_link": "TCTAGA",
