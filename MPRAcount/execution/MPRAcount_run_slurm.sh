@@ -21,4 +21,4 @@ scontrol show -dd job $SLURM_JOB_ID
 printenv
 seff $SLURM_JOB_ID
 
-source ${gitrepo_dir}/MPRAcount/execution/MPRAcount_fileprep.sh  ${out} ${proj} ${config_file} ${library_rerun_name}
+source ${gitrepo_dir}/MPRAcount/execution/MPRAcount_fileprep_slurm.sh  ${out} ${proj} ${config_file} ${library_rerun_name}
