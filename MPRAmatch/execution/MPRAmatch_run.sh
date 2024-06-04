@@ -36,4 +36,4 @@ printenv
 echo ${out}
 echo ${proj}
 
-source ${gitrepo_dir}/MPRAmatch/execution/MPRAmatch_fileprep.sh ${out} ${proj} ${config_file} ${SLURM_ARRAY_TASK_ID} > ${slurm_logfile}
+source ${gitrepo_dir}/MPRAmatch/execution/MPRAmatch_fileprep_slurm.sh ${out} ${proj} ${config_file} ${SLURM_ARRAY_TASK_ID} > ${slurm_logfile}
