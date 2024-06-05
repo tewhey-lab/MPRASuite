@@ -3,7 +3,13 @@
 **_Multiplexed Reporter Assay (MPRA)_**, a high-throughput technique that enables the simultaneous testing of hundreds of DNA sequences for their regulatory effects on gene expression. By utilizing synthetic DNA sequences containing known genetic variants and measuring their impact on reporter gene expression, hundreds of expression-modulating variants can be identified across different genomic regions. Importantly, this method provides a comprehensive and efficient means to identify functional genetic variants associated with gene regulation, offering valuable insights into the genetic basis of complex traits and diseases. 
 
 ## Overview of MPRA Technology:
+<br>
+<br>
+<br>
 
+![Graphical pipeline](./graphics/mpra_image.jpeg)
+<br>
+<br>
 **_1. MPRA Library Construction:_**
 * Design and synthesize a library of DNA sequences containing genetic variants of interest, such as SNPs or other regulatory variants.
 * Attach unique barcodes to single-stranded DNA fragments, convert them to double-stranded DNA using emulsion PCR, and insert them into a reporter vector (with the reporter gene removed) to create the mpra:Δorf library.

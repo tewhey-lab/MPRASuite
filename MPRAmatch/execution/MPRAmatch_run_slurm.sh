@@ -4,7 +4,11 @@
 #SBATCH -n 70
 #SBATCH --time=72:00:00
 #SBATCH --mem 350G
+<<<<<<< HEAD
 #SBATCH --mail-user=firstname.lastname@jax.org	
+=======
+#SBATCH --mail-user=harshpreet.chandok@jax.org	
+>>>>>>> origin/main
 #SBATCH --output=MPRAmatch-%x.%j.out
 #SBATCH --error=MPRAmatch-%x.%j.err	
 #SBATCH --mail-type=BEGIN,END,FAIL
@@ -25,6 +29,10 @@ mkdir -p ${out}/execution/${now}_${proj}_MPRAmatch
 mkdir -p ${out}/inputs
 mkdir -p ${out}/logs
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
 slurm_logfile="${out}/logs/${SLURM_ARRAY_TASK_ID}.out"
 
 echo "Writing to ${slurm_logfile}"

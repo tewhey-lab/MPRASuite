@@ -37,6 +37,7 @@ fi
 fi
 
 #####
+<<<<<<< HEAD
 
 job_pid=$$
 logfile="${out}/logs/${proj}_${job_pid}.out"
@@ -48,13 +49,28 @@ echo "Total Memory: $(free -h | awk '/Mem/{print $2}') " >> ${logfile}
 echo "Disk Space: $(df -h / | awk 'NR==2{print $4}')" >> ${logfile}
 echo "Job PID is ${job_pid}" >> ${logfile}
 
+=======
+>>>>>>> origin/main
 
 config_file=$1
 source ${config_file}
 
 now=$(date +"%y%m%d-%H%M%S")
 out=${now}_${library_rerun_name}
+###
 
+job_pid=$$
+logfile="${out}/logs/${proj}_${job_pid}.out"
+
+<<<<<<< HEAD
+=======
+# Resources
+echo "Resources: " > ${logfile}
+echo "Number of CPUs: $(nproc)" >> ${logfile}
+echo "Total Memory: $(free -h | awk '/Mem/{print $2}') " >> ${logfile}
+echo "Disk Space: $(df -h / | awk 'NR==2{print $4}')" >> ${logfile}
+echo "Job PID is ${job_pid}" >> ${logfile}
+>>>>>>> origin/main
 
 source ${gitrepo_dir}/MPRAcount/execution/MPRAcount_fileprep.sh  ${out} ${proj} ${config_file} ${library_rerun_name} ${job_pid} ${singularity}
 
