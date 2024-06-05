@@ -1,0 +1,13 @@
+#MPRAmodel config file
+
+export gitrepo_dir="/projects/tewhey-lab/github/MPRASuite"
+export mpramodel_container="/projects/tewhey-lab/images/MPRASuite-MPRAmodel_v1.sif"
+export proj="OLJR"
+export prefix=""
+export negCtrl="negCtrl"
+export posCtrl="expCtrl"
+export attr_proj="/projects/tewhey-lab/projects/collaborations/autoimmune_mpra/Tcell_GWAS_ctrl.attributes"
+export count_proj="/projects/tewhey-lab/projects/collaborations/autoimmune_mpra/231103-233906_OLJR/outputs/MPRAmatch/231108-094515_OLJR_MPRAcount/OLJR.count"
+export cond_proj="/projects/tewhey-lab/projects/collaborations/autoimmune_mpra/231103-233906_OLJR/outputs/MPRAmatch/231108-094515_OLJR_MPRAcount/MPRAmodel/OLJR_condition.txt"
+export proj_options="cSkew=F, prior=F, method='ss'"
+
