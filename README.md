@@ -34,7 +34,7 @@
 
 ## MPRASuite: MPRA Data Analysis Pipeline:
 
-The **MPRAsuite** MPRAsuite comprises three meticulously developed pipelines designed to facilitate the analysis of Massively Parallel Reporter Assays (MPRAs) namely [MPRAmatch](./MPRAmatch), [MPRAcount](./MPRAcount), [MPRAmodel](./MPRAmodel). These pipelines are employed in conjunction with various stages of the MPRA workflow depending on the specific objectives of the library. The development of the MPRAsuite involved leveraging the framework established by [Tewhey et al.,(2016)](https://www.cell.com/fulltext/S0092-8674(16)30421-4) and generalizing the procedural steps to enable the execution of data analysis on any given MPRA library with minimal input requirements.
+The **MPRAsuite** MPRAsuite comprises three meticulously developed pipelines designed to facilitate the analysis of Massively Parallel Reporter Assays (MPRAs) namely [MPRAmatch](./MPRAmatch), [MPRAcount](./MPRAcount), [MPRAmodel](./MPRAmodel). These pipelines are employed in conjunction with various stages of the MPRA workflow depending on the specific objectives of the library. The development of the MPRAsuite involved leveraging the framework established by [Tewhey et al.,(2016)](https://www.cell.com/fulltext/S0092-8674(16)30421-4) and [Siraj et al.,(2024)](https://pubmed.ncbi.nlm.nih.gov/38766054/) and generalizing the procedural steps to enable the execution of data analysis on any given MPRA library with minimal input requirements.
 
 ### Please see the below links associated to each of the three pipelines for detail documentation/Readme:
 
