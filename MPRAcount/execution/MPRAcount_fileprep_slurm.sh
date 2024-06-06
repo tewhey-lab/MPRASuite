@@ -105,8 +105,4 @@ echo "SLURM Job ID: ${SLURM_JOB_ID}" >> ${log_file}
 seq_filepath=$(cat ${acc_reps_file} | cut -f 1| head -n 1)
 seq_dir=$(dirname $seq_filepath)
 
-echo "The raw sequencing illumina fastq files for cell types released by GT are located at: ${seq_dir}"
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
+echo "The raw sequencing illumina fastq files for cell types released by GT are located at: ${seq_dir}" >>  ${log_file}

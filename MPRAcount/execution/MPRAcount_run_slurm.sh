@@ -4,11 +4,7 @@
 #SBATCH -n 16
 #SBATCH --time=72:00:00
 #SBATCH --mem 600G
-<<<<<<< HEAD
 #SBATCH --mail-user=firstname.lastname@jax.org	
-=======
-#SBATCH --mail-user=harshpreet.chandok@jax.org	
->>>>>>> origin/main
 #SBATCH --output=MPRAcount-%x.%j.out
 #SBATCH --error=MPRAcount-%x.%j.err	
 #SBATCH --mail-type=BEGIN,END,FAIL

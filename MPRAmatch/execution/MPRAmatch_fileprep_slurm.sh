@@ -43,22 +43,14 @@ fasta_name=$(basename ${fasta})
 if [[ "$fasta" =~ \.gz$ ]]; then
     echo "File '$fasta' is already zipped."
     # Rename the original file
-<<<<<<< HEAD
-    mv "$fasta" ${out}/inputs/"${proj}_reference.fasta.gz"
-=======
     cp "$fasta" ${out}/inputs/"${proj}_reference.fasta.gz"
->>>>>>> origin/main
     echo "Original file '$fasta' renamed to '${proj}_reference.fasta.gz'."
 else
     gzip "$fasta"
 
     if [ $? -eq 0 ]; then
         echo "File zipped successfully."
-<<<<<<< HEAD
-        mv "${fasta}.gz" ${out}/inputs/"${proj}_reference.fasta.gz"
-=======
         cp "${fasta}.gz" ${out}/inputs/"${proj}_reference.fasta.gz"
->>>>>>> origin/main
         echo "Original file '$fasta' renamed to '${proj}_reference.fasta.gz'."
     else
         echo "Error: Zip operation failed."
@@ -139,7 +131,3 @@ seq_filepath=$(cat ${acc_file} | cut -f 1| head -n 1)
 seq_dir=$(dirname $seq_filepath)
 
 echo "The raw sequencing illumina files released by GT are located at: ${seq_dir}"
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main

@@ -3,14 +3,9 @@
 out=$1
 proj=$2
 config_file=$3
-<<<<<<< HEAD
-job_pid=$4
-singularity=$5
-=======
 library_rerun_name=$4
 job_pid=$5
 singularity=$6
->>>>>>> origin/main
 
 source ${config_file}
 
@@ -81,30 +76,14 @@ echo "Executing SIF with Code"
 
 if [ -n "${singularity}" ]; then
 "${singularity}" exec ${mpra_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
-<<<<<<< HEAD
-echo "Done"
-else
-singularity exec ${mpra_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
-echo "Done"
-fi
-=======
-echo "Done-singularity accessed from "$singularity" "
+echo "Done-singularity accessed from "${singularity}" "
 else
 singularity exec ${mpra_container} sh ${mpramatch_dir}/execution/${out}_MPRAcount/MPRAcount_${proj}_call.sh
 echo "Done-Singularity accessed from the PATH"
 fi
 
->>>>>>> origin/main
-
 #*******************Step 5: Copy outputs**************************************
 
-<<<<<<< HEAD
-#*******************Step 5: Copy outputs**************************************
-
-
-=======
-
->>>>>>> origin/main
 cp ${cmd}/MPRAcount-${proj}.${job_pid}.out ${mpramatch_dir}/logs
 rm ${mpramatch_dir}/MPRAcount_${proj}_inputs.json
 mv ${mpramatch_dir}/logs/.out ${mpramatch_dir}/logs/${now}_${proj}_MPRAcount_cromwell-workflow-logs
@@ -121,9 +100,4 @@ echo "Job ID: ${job_pid}" >> ${log_file}
 seq_filepath=$(cat ${acc_reps_file} | cut -f 1| head -n 1)
 seq_dir=$(dirname $seq_filepath)
 
-<<<<<<< HEAD
-echo "The raw sequencing illumina fastq files for cell types released by GT are located at: ${seq_dir}"
-=======
 echo "The raw sequencing illumina fastq files for cell types released by GT are located at: ${seq_dir}" >> ${log_file}
->>>>>>> origin/main
-

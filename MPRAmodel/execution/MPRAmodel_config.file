@@ -2,6 +2,7 @@
 
 export gitrepo_dir="/projects/tewhey-lab/github/MPRASuite"
 export mpramodel_container="/projects/tewhey-lab/images/MPRASuite-MPRAmodel_v1.sif"
+export mpracount_output_folder=""
 export proj="OLJR"
 export prefix=""
 export negCtrl="negCtrl"

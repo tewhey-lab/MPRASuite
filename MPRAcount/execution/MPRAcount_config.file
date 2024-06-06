@@ -14,7 +14,3 @@ export MPRAcount_json="<path/to/user/json/customized/file>"
 
 #leave the variable blank if singularity is installed in the PATH
 export singularity="/path/to/installed/singularity"
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
