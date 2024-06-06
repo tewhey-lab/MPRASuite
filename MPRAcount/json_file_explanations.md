@@ -20,4 +20,4 @@ Here is the JSON template with list of parameters provided to facilitate easy im
 * **MPRAcount.replicate_fastq**: List of fastq files for each replicate for all cell types being analyzed
 * **MPRAcount.replicate_id**: List of IDs provided for each cell replicate
 <br>
-The JSON file used in the pipeline currently applies default values for all the listed parameters passed using the MPRAmatch_copnfig.file. If your library preparation involves different settings, please update the parameters accordingly and manually provide the JSON file in the config file. (Please refer to the MPRAcount README section 4b)
+The JSON file used in the pipeline currently applies default values for all the listed parameters passed using the MPRAcount_copnfig.file. If your library preparation involves different settings, please update the parameters accordingly and manually provide the JSON file in the config file. (Please refer to the MPRAcount README section 4b)
