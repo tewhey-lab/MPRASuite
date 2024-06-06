@@ -119,7 +119,7 @@ Please copy the provided content and replace the inputs for each parameter as ne
 <br>
 **Note:** The variables ```proj``` and ```library_rerun_name``` should be a string (library name) that will be appended to name the run folder. For example: ```231103-233906_OL111```. If the user runs the pipeline with default settings both variable can have the same string and ```OL111``` will be used as prefix to name all the output files. To run tests with different settings, you can rename only the main folder by appending a unique string to the library name ```library_rerun_name``` so that it can be differentiated with the other run folders in the directory (if any), all the output files will follow the ```proj``` passed by the user.
 <br>
-*We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly.
+*We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly. Please refer [here](https://github.com/tewhey-lab/MPRASuite/blob/main/MPRAcount/json_file_explanations.md) for detailed explanation of JSON parameters and default settings.
 
 <br>
 
