@@ -1,21 +1,41 @@
-Here is the list of parameters provided in the JSON file to facilitate easy implementation by users according to the library design requirements:
+Here is the JSON template with list of parameters provided to facilitate easy implementation by users according to their library design requirements. Each parameter in quotes should be followed by a colon and then replaced with the actual values for "data-type":
 
-  "MPRAmatch.read_a": "File", [Path to read1 fastq file]
-  "MPRAmatch.read_b": "File", [Path to read2 fastq file]
-  "MPRAmatch.reference_fasta": "File", [Path to reference fastq file]
-  "MPRAmatch.read_b_number": "Integer", [default: 2]
-  "MPRAmatch.read_len": "Integer", [default: 250 ; Maximum length (in bp) of reads to be flashed ]
-  "MPRAmatch.seq_min": "Integer", [default: 100 ; Minimum sequence length to pull for barcode ]
-  "MPRAmatch.enh_min": "Integer", [default: 50 ; Minimum enhancer length to pull ]
-  "MPRAmatch.enh_max": "Integer", [default: 210 ; Maximum enhancer length to pull ]
-  "MPRAmatch.barcode_link": "String", [default: "TCTAGA" ; 6 bases at the barcode end of the sequence linking the barcode and oligo ]
-  "MPRAmatch.oligo_link": "String", [efault: "AGTG" ; 4 bases at the oligo end of the sequence linking the barcode and oligo ]
-  "MPRAmatch.end_oligo_link": "String", [default: "CGTC" ; 4 bases indicating the oligo is no longer being sequenced ]
-  "MPRAmatch.working_directory": "/path/to/MPRASuite/MPRAmatch/scripts", [Path to the MPRAmatch scripts folder]
-  "MPRAmatch.out_directory": "String", [Path to the output directory for MPRAmatch]
-  "MPRAmatch.id_out": "String", [Project ID or library name]
-**"MPRAmatch.attributes": "File"; [Path to attributes file ]
+ ```
+  "MPRAmatch.read_a": "File",
+  "MPRAmatch.read_b": "File", 
+  "MPRAmatch.reference_fasta": "File", 
+  "MPRAmatch.read_b_number": "Integer", 
+  "MPRAmatch.read_len": "Integer", 
+  "MPRAmatch.seq_min": "Integer", 
+  "MPRAmatch.enh_min": "Integer", 
+  "MPRAmatch.enh_max": "Integer", 
+  "MPRAmatch.barcode_link": "String",
+  "MPRAmatch.oligo_link": "String", 
+  "MPRAmatch.end_oligo_link": "String",
+  "MPRAmatch.working_directory": "/path/to/MPRASuite/MPRAmatch/scripts", 
+  "MPRAmatch.out_directory": "String", 
+  "MPRAmatch.id_out": "String"
 
+##Use this parameter only for saturation mutagenesis library
+**"MPRAmatch.attributes": "File"
+
+```
+<br>
+
+* **MPRAmatch.read_a**: Path to read1 fastq file
+* **MPRAmatch.read_b**: Path to read2 fastq file
+* **MPRAmatch.reference_fasta**: Path to reference fastq file
+* **MPRAmatch.read_b_number**: default: 2
+* **MPRAmatch.read_len**: default: 250 ; Maximum length (in bp) of reads to be flashed 
+* **MPRAmatch.seq_min**: default: 100 ; Minimum sequence length to pull for barcode
+* **MPRAmatch.enh_min**: default: 50 ; Minimum enhancer length to pull
+* **MPRAmatch.enh_max**: default: 210 ; Maximum enhancer length to pull 
+* **MPRAmatch.barcode_link**: default: "TCTAGA" ; 6 bases at the barcode end of the sequence linking the barcode and oligo 
+* **MPRAmatch.oligo_link**: default: "AGTG" ; 4 bases at the oligo end of the sequence linking the barcode and oligo 
+* **MPRAmatch.end_oligo_link**: default: "CGTC" ; 4 bases indicating the oligo is no longer being sequenced 
+* **MPRAmatch.working_directory"** Path to the MPRAmatch scripts folder
+* **MPRAmatch.out_directory**: Path to the output directory for MPRAmatch
+* **MPRAmatch.id_out**: Project ID or library name
 
 The JSON file used in the pipeline currently applies default values for all the listed parameters. If your library preparation involves different settings, please update the parameters accordingly and manually provide the JSON file in the config file. (Please refer to the MPRAmatch README section 4b)
 
