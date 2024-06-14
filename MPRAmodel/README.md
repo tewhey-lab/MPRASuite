@@ -1,5 +1,15 @@
 # MPRAmodel: (A series of functions to assist in analysis of MPRA count tables)
 
+
+## Pipeline Flowchart
+
+![Graphical pipeline](./graphics/MPRAmodel_pipeline.svg)
+
+## Pipeline Description
+
+This pipeline is implemented in the **R**.
+
+
 **1. Clone Repo (or Pull Updated Repo):**
 <br>
 Refer to the repository cloned in the previous step or else clone again.
