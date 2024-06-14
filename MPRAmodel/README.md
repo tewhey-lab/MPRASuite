@@ -1,125 +1,186 @@
-# MPRAmodel - Third Module in MPRASuite
+# MPRAmodel: (A series of functions to assist in analysis of MPRA count tables)
 
-MPRAmodel.R:
-      A series of functions to assist in analysis of MPRA count tables
+**1. Clone Repo (or Pull Updated Repo):**
+<br>
+Refer to the repository cloned in the previous step or else clone again.
 
-## Quick Start:
 ```
-	source("MPRAmodel.R")
-	mpra_out <- MPRAmodel(<countsTable>, <attributesData>, <conditionData>, <filePrefix>, <negCtrlName>, <posCtrlName>, <projectName>)
+git clone https://github.com/tewhey-lab/MPRASuite.git && cd MPRASuite
 ```
+<br>
 
-## Arguments
+**2. **_QC-check:_** Check the MPRAcount git repository directory structure :**
 
-### There are 3 files that this pipeline needs for input. <br>
-   * `countsTable` : Table of counts with header. Should be either the output of the [MPRAcount](https://github.com/tewhey-lab/tag_analysis_WDL) pipeline, or in the same format. <br>
-   * `attributesData` : Attributes for each oligo including oligo name, SNP, chromosome, position, reference allele, alt allele, Allele (ref/alt), window, strand, project, haplotype. For Oligos named in the form chr:pos:ref:alt:allele:window(:haplotype) the scripts [here](https://github.com/tewhey-lab/tag_analysis_WDL/blob/master/scripts/make_infile.py) and [here](https://github.com/tewhey-lab/tag_analysis_WDL/blob/master/scripts/make_attributes_oligo.pl) can be used to generate the attributes table. <br>
-   * `conditionData` : 2 columns w/no header column 1 is replicates as found in the count table, column 2 indicates cell type. This can be done in the program of your choice, or taken from the output of [MPRAcount](https://github.com/tewhey-lab/tag_analysis_WDL).
+To ensure proper cloning of the repository, please examine the directory structure provided below. <br>
+(**Note:** There are additional folders for other modules, but for the purpose of this instruction, focus on examining only the MPRAcount folder.)
+<br>
 
-### Other arguments needed <br>
-  * `exclList` : ARRAY; List of cell types, in string format, that should be excluded from the analysis. This array is empty by default.
-  * `filePrefix` : STRING; All written files will have this string included in the file name, if running the pipeline multiple times with  different settings this is a good place to differentiate them
-  * `plotSave` : LOGICAL; Default `TRUE`, indicator of whether or not to save non-normalization QC plots
-  * `altRef` :  LOGICAL; Default `TRUE`, indicator of how to sort alleles for `cellSpecificTtest`
-  * `method` : STRING; Default "ss", indicator of method to be used to normalize the data
-      * `'ss'` : Summit Shift - shifts the l2fc density peak to line up with 0
-      * `'ssn'` : Summit Shift (Negative Controls Only) - shifts the peak of negative controls to 0
-      * `'ro'` : Remove outliers - remove oligos that don't have a p-value or have a p-value > 0.001
-      *`'nc'` : Negative Controls - normalize only the negative controls
-  * `negCtrlName` : STRING; Default "negCtrl", how negative controls are indicated in the project column of the `attributesData` file
-  * `posCtrlName` : STRING; Default "expCtrl", how positive controls are indicated in the project column of the `attributesData` file
-  * `projectName` : STRING; Default "MPRA_PROJ", a generalized name for the overall project
-  * `tTest` : LOGICAL; Default `TRUE`, perform cell type specific tTest to determine emVARs
-  * `DEase` : LOGICAL; Default `TRUE`, use Differential Expression methods to detect Allele Specific Expression (this method can be found [here](http://rstudio-pubs-static.s3.amazonaws.com/275642_e9d578fe1f7a404aad0553f52236c0a4.html))
-  * `correction` : STRING; Default "BH", indicator of whether to use Benjamini Hochberg ("BH") or Bonferroni ("BF") for p-value correction
-  * `cutoff` : INT; Default 0.01, significance cutoff for including alleles for skew calculation (tTest only)
-  * `upDisp` : LOGICAL; Default `TRUE`, update dispersions with cell type specific calculations
-  * `prior` : LOGICAL; Default `FALSE`, use `betaPrior=F` when calculating the cell type specific dispersions
+```
+    - MPRASuite/  
+      - example
+      - graphics
+      - LICENSE.txt
+      - README.md
+      - MPRAcount
+     - MPRAmatch
+     - MPRAmodel
+      - color_schemes.tsv
+      - execution
+      - graphics
+      - MPRAmodel.R
+      - output_description.md
+      - README.md
+      - setup
+
+```
+<br>
+
+**3. Creating MPRA SIF(singularity image file):**
+
+Please follow the steps below if the SIF file was not installed in the early MPRAmatch step, if it is already installed, you can skip this section.
+<br>
+To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure haing singularity installed on your system and please follow the below commands:
+
+**a. Pull the Docker image from Quay.io and convert into SIF file:**
+<br>
+Open a terminal and run the following command:
+
+<br>
+
+```
+singularity run docker://quay.io/harshpreet_chandok/mprasuite:latest
+```
+<br>
+
+**b. Ensure the SIF file is created correctly:**
+<br>
+```
+./mprasuite_latest.sif
+```
+<br>
+
+If the installation is successful, executing this command will list all the tools, software, and libraries along with their versions in the image file for better tracking. If no list is generated, there may be issues with the installation.
+
+<br>
 
 
-## Functions (in alphabetical order) <br>
-  * `addHaplo` -  Add haplotype column to attribute data and resolve oligos with multiple projects, if oligos with multiple projects are listed separately, they will be collapsed into a single row, if oligos are identical but the SNP is different for them, an error will be thrown <br>
-     _use_ :
-      ```
-      addHaplo(attributesData, negCtrlName, posCtrlName, projectName)
-      ```
-  * `cellSpecificTtest` - Function to perform TTest on individual cell types, determine the allelic skew, and identify emVARs <br>
-     _use_ :
-      ```
-      cellSpecificTtest(attributesData, counts_norm, dups_output, ctrl_mean, exp_mean, ctrl_cols, exp_cols, altRef, correction, cutoff)
-      ```
-  * `conditionStandard` - Standardize condition data <br>
-    _use_ :
-    ```
-    conditionStandard(conditionData)
-    ```
-  * `dataOut` - Retrieve output data for future functions - if only looking for results and not the plots this is the only function that needs to be called. Most functions should only need an output from here <br>
-    _use_ :
-    ```
-    dataOut(countsData, attributesData, conditionData, exclList, altRef, file_prefix, method, negCtrlName, tTest, Dease, correction, cutoff, upDisp, prior)
-    ```
-  * `DESkew` - Function to determine the allelic skew of oligos and identify emVARs using the DESeq method to determine allelic skew <br>
-    _use_ :
-    ```
-    DESkew(conditionData, counts_norm, attributesData, celltype, dups_output, prior)
-    ```
-  * `expandDups` - Expand IDs that denote duplicate oligos in count/DESeq results, or any dataframe with rownames that are separated by a ";" <br>
-    _use_ :
-    ```
-    expandDups(output)
-    ```
-  * `fileDate` - Generate the date in YYYYMMDD format for separation of runs in the project <br>
-    _use_ :
-    ```
-    fileDate()
-    ```
-  * `MPRAmodel` - Overall function which will run everything once called <br>
-    _use_ :
-    ```
-    MPRAmodel(countsData, attributesData, conditionData, exclList, filePrefix, plotSave, altRef, method, negCtrlName, posCtrlName, projectName, tTest, Dease, correction, cutoff, upDisp, prior, …)
-    ```
-  * `mpraScatter` - Function to produce scatter plot of counts data for visualization of correlation between two samples <br>
-      _use_ :
-      ```
-      mpraScatter(conditionData, countsOut, sampleX, sampleY, xmax, ymax, plotSave)
-      ```
-  * `oligoIsolate` - Remove Error, CIGAR, MD and position columns if necessary; aggregate count data with relation to the oligo, writes a copy of the collapsed raw counts  <br>
-     _use_ :
-    ```
-    oligoIsolate(countsData, file_prefix)
-    ```
-  * `panel.cor` - Internal function to produce correlation scatter plots <br>
-      _use_ :
-      ```
-      panel.cor(x, y, digits, prefix, cex.cor, …)
-      ```
-  * `panel.lm` - Internal function to produce correlation scatter plots <br>
-      _use_ :
-      ```
-      panel.lm(x, y, pch, col.lm, …)
-      ```
-  * `panel.nlm` - Internal function to produce correlation scatter plots <br>
-      _use_ :
-      ```
-      panel.nlm(x, y, pch, col.lm, …)
-      ```
-  * `plor_logFC` - Function to produce plots showing the expression fold change vs. normalized tag counts <br>
-      _use_ :
-      ```
-      plot_logFC(full_output, sample, negCtrlName, posCtrlName)
-      ```
-  * `processAnalysis` - Initial processing of files via DESeq analysis <br>
-      _use_ :
-      ```
-      processAnalysis(countsData, conditionData, exclList) <br>
-      ```
-  * `tagNorm` - Normalize DESeq results and plot normalized densities for each cell type  <br>
-      _use_ :
-      ```
-      tagNorm(countsData, conditionData, attributesData, exclList, method, negCtrlName, upDisp, prior) <br>
-      ```
-  * `tagSig` - Replace dispersions of normalized dds with cell type specific dispersions, called within tagNorm does not need to be called by itself <br>
-      _use_ :
-      ```
-      tagSig(dds_results, dds_rna, cond_data, exclList, prior)
-      ```
+**4.  Getting the input files ready:**
+
+The user is responsible for manually generating ```MPRAmodel_<library_name>.config```, which is required input for the pipeline to proceed. The filenames can be customized by the user, but it is crucial to ensure that the correct files are provided to the pipeline.
+<br>
+**a.  MPRAmodel specific config file:**
+<br>
+
+Please copy the provided content and replace the inputs for each parameter as needed. Save the file with a name such as `OL111_MPRAmodel.config` (refer to the example below).
+<br>
+### There are 3 files that this pipeline needs as input to proceed with the analysis: <br>
+   * `countsTable` : Table of counts with header. Should be either the output of the [MPRAcount](https://github.com/tewhey-lab/MPRASuite/tree/main/MPRAcount) pipeline, or in the same format. <br>
+   * `attributesData` : Attributes for each oligo including oligo name, SNP, chromosome, position, reference allele, alt allele, Allele (ref/alt), window, strand, project, haplotype. For Oligos named in the form chr:pos:ref:alt:allele:window(:haplotype) the scripts [here](https://github.com/tewhey-lab/tag_analysis_WDL/blob/master/scripts/make_infile.py) and [here](https://github.com/tewhey-lab/tag_analysis_WDL/blob/master/scripts/make_attributes_oligo.pl) can be used to generate the attributes table.
+<br>
+   * `conditionData` : 2 columns w/no header column 1 is replicates as found in the count table, column 2 indicates cell type. This can be done in the program of your choice, or taken from the output of [MPRAcount](https://github.com/tewhey-lab/MPRASuite/tree/main/MPRAcount).
+
+
+<br>
+*We offer users the flexibility to provide a JSON file with their preferred library design settings. If no JSON file is specified in the config file, the pipeline will default to the standard settings and generate a JSON file accordingly. Please refer [here](https://github.com/tewhey-lab/MPRASuite/blob/main/MPRAcount/json_file_explanations.md) for detailed explanation of JSON parameters and default settings.
+<br>
+<br>
+
+
+```
+#Input parameters for MPRAmodel
+
+gitrepo_dir="/projects/tewhey-lab/github/MPRASuite"
+mpramodel_container="/projects/tewhey-lab/images/MPRASuite-MPRAmodel_v1.sif"
+mpracount_output_folder="/projects/tewhey-lab/projects/collaborations/autoimmune_mpra/231103-233906_OLJR/outputs/MPRAmatch/231108-094515_OLJR_MPRAcount/MPRAmodel/test/"
+proj="OLJR"
+prefix=
+negCtrl="negCtrl"
+posCtrl="expCtrl"
+attr_proj="/projects/tewhey-lab/projects/collaborations/autoimmune_mpra/Tcell_GWAS_ctrl.attributes"
+count_proj="/projects/tewhey-lab/projects/collaborations/autoimmune_mpra/231103-233906_OLJR/outputs/MPRAmatch/231107-231034_OLJR_wo_Bcell_MPRAcount/231115-230534_OLJR.A_MPRAmodel/OLJR.A.count"
+#count_proj="/projects/tewhey-lab/projects/collaborations/autoimmune_mpra/231103-233906_OLJR/outputs/MPRAmatch/231107-231034_OLJR_wo_Bcell_MPRAcount/231115-230534_OLJR.A_MPRAmodel/OLJR.A.count"
+cond_proj="/projects/tewhey-lab/projects/collaborations/autoimmune_mpra/231103-233906_OLJR/outputs/MPRAmatch/231107-231034_OLJR_wo_Bcell_MPRAcount/231115-230534_OLJR.A_MPRAmodel/OLJR.A_condition.txt"
+proj_options="cSkew=F, prior=F, method='ss'"
+
+```
+<br>
+
+**5A. Run the MPRAmodel pipeline on a linux workstation:**
+
+The pipeline execution command requires two inputs (refer to the example below):
+
+The absolute path to the ```MPRAmodel_run.sh``` script within the git repository.
+The absolute path to the ```MPRAmodel.config``` file. 
+
+This command can be executed <br>
+1. directly from the terminal (example below) which will display the standard outputs on the terminal itself.
+2. The same command can be run as a job in the background using ```nohup``` (example below) and the standard outputs can be saved to a log file. To check if the status of the job, use the command ```jobs``` on the terminal.
+<br>
+
+```
+##1. To run on terminal
+
+bash </path/to/MPRASuite/MPRAmodel/execution/MPRAmodel_run.sh> </path/to/<library_name>_MPRAmodel_config.file
+
+## 2. To save the standard output to a log file
+
+nohup bash </path/to/MPRASuite/MPRAmodel/execution/MPRAmodel_run.sh> </path/to/<library_name>_MPRAmodel_config.file > <path/to/MPRAmodel.log 2>&1 &
+
+```
+<br>
+ 
+
+**5B. Run the MPRAmodel pipeline on a SLURM cluster:**
+
+The pipeline execution command requires three inputs (refer to the example below):
+
+A user-provided string for the job name (```-J```), which will be added to the slurm standard error and output file names for improved tracking.
+The absolute path to the ```MPRAmodel_run_slurm.sh``` script within the git repository.
+The absolute path to the ```MPRAmodel.config``` file. 
+This command can be executed directly from the terminal.
+
+```
+sbatch -J "<library_name>" </path/to/MPRASuite/MPRAmodel/execution/MPRAmodel_run_slurm.sh> </path/to/<library_name>_MPRAmodel_config.file
+```
+<br>
+
+**6. Explore the output folder:**
+
+The output folder will be generated under the folder specified in the config file (parameter ```mpramatch_dir```) with a date and time stamp appended to the folder name as a suffix followed by ```<library_name>```. <br>
+Within the main parent folder carried over from the output of previous module MPRAmatch in the format `YYMMDD-HHMMSS_<library_name>/outputs/MPRAmatch/`, subfolder namely `YYMMDD-HHMMSS_<library_name>_MPRAcount/` will be created with the output files.
+<br>
+
+```
+   - YYMMDD-HHMMSS_<library_name>/
+    - execution
+      - YYMMDD-HHMMSS_<library_name>_MPRAmatch
+        - cromwell-executions
+        - cromwell-workflow-logs
+        - MPRAmatch_<library_name>_inputs.json
+        - MPRAmatch_<library_name>_call.sh
+      - YYMMDD-HHMMSS_<library_name>_count
+        - cromwell-executions
+        - cromwell-workflow-logs
+        - MPRAcount_<library_name>_inputs.json
+        - MPRAcount_<library_name>_call.sh
+    - inputs
+      - <library_name>_R1.fastq.gz
+      - <library_name>_R2.fastq.gz
+      - <library_name>_reference.fastq.gz
+      - <cell_types>.fastqs.gz
+    - outputs
+      - MPRAmatch
+        - <library_name>.merged.match.enh.mapped.barcode.ct.parsed
+        - YYMMDD-HHMMSS_<library_name>_MPRAcount/
+          - YYMMDD-HHMMSS_<library_name>_MPRAmodel/
+            - /plots
+            - /results
+    - logs
+      - YYMMDD-HHMMSS_<library_name>_MPRAmatch_cromwell-workflow-logs
+      - YYMMDD-HHMMSS_<library_name>_MPRAcount_cromwell-workflow-logs
+
+```
+<br>
+
+Detailed explanations of the output files, including their headers and columns, can be found [here](https://github.com/tewhey-lab/MPRASuite/blob/main/MPRAmodel/output_file_explanations.md).
+
