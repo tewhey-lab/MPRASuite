@@ -37,12 +37,16 @@ for(celltype in unique(cell_reps$celltype)){
 	indv_rep_counts[[celltype]] <- list()
 	reps <- rownames(dataCond)[which(dataCond$condition==celltype)]
 	message(paste0(reps, collapse="\t"))
-	cell_sub <- dataCount[,reps]
-	agg_rep_bc <- data.frame(table(dataCount$Oligo[which(rowSums(cell_sub)>0)]))
+	cell_sub <- dataCount[,reps, drop = FALSE]
+	#agg_rep_bc <- data.frame(table(dataCount$Oligo[which(rowSums(cell_sub)>0)]))
+	# Fix to accommodate single replicate
+   	row_totals <- rowSums(cell_sub)
+	idx_nonzero <- which(row_totals > 0)
+	agg_rep_bc <- data.frame(table(dataCount$Oligo[idx_nonzero]))
 	agg_gt10 <- nrow(agg_rep_bc[which(agg_rep_bc$Freq>10),])
 	message("aggregating counts")
 	agg_count <- aggregate(. ~Oligo, data=dataCount[,-1], FUN=sum)
-	agg_count$means <- rowMeans(agg_count[,reps])
+	agg_count$means <- rowMeans(agg_count[,reps, drop = FALSE])
 	mean_bound <- as.numeric(quantile(agg_count$means, seq(0,1,0.01))[91])
 	tot_bound <- 0.5*max(agg_count$means, na.rm=T)
 	if(celltype=="DNA"){
