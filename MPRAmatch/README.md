@@ -71,9 +71,9 @@ The MPRA image file contains all necessary tools and dependencies to run the ana
 - ggplot2 3.4.4
 - gridExtra 2.3
 - reshape2 1.4.4
-<br>
-To install a apptainer image please follow the below commands:
 
+To install a apptainer image please follow the below commands:
+<br>
 **a. Pull the container from GitHub Container Registry:**
 <br>
 Open a terminal and run the following command:
