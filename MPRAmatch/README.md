@@ -54,24 +54,27 @@ To ensure proper cloning of the repository, please examine the directory structu
 
 **3. Creating MPRA SIF(singularity image file):**
 
-MPRA image file will contain all the tools and their dependancies needed for the pipeline to analyze the datasets. 
-To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure having singularity installed on your system and please follow the below commands:
+The MPRA image file contains all necessary tools and dependencies to run the analysis pipeline. For reproducibility, we strongly recommend using this container. Please note that the alignment step is specifically optimized for a particular version of minimap2. A complete list of all dependency versions is provided below.
+<br>
 
-**a. Pull the Docker image from Quay.io and convert into SIF file:**
+<br>
+To install a apptainer image please follow the below commands:
+
+**a. Pull the container from GitHub Container Registry:**
 <br>
 Open a terminal and run the following command:
 
 <br>
 
 ```
-singularity run docker://quay.io/harshpreet_chandok/mprasuite:latest
+apptainer pull oras://ghcr.io/tewhey-lab/mprasuite:latest
 ```
 <br>
 
 **b. Ensure the SIF file is created correctly:**
 <br>
 ```
-./mprasuite.sif
+./mprasuite_v1_latest.sif
 ```
 <br>
 If the installation is successful, executing this command will list all the tools, software, and libraries along with their versions in the image file for better tracking. If no list is generated, there may be issues with the installation.
