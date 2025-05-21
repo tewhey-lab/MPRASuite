@@ -47,9 +47,9 @@ To ensure proper cloning of the repository, please examine the directory structu
 
 **3. Creating MPRA SIF(singularity image file):**
 
-Please follow the steps below if the SIF file was not installed in the early MPRAmatch step, if it is already installed, you can skip this section.
+The MPRA image file contains all necessary tools and dependencies to run the analysis pipeline. For reproducibility, we strongly recommend using this container.
 <br>
-To install a Docker image from Quay.io and converting it into a singularity image to be able to use on the Linux system, ensure haing singularity installed on your system and please follow the below commands:
+To install a apptainer image please follow the below commands:
 
 **a. Pull the Docker image from Quay.io and convert into SIF file:**
 <br>
@@ -58,7 +58,7 @@ Open a terminal and run the following command:
 <br>
 
 ```
-singularity run docker://quay.io/harshpreet_chandok/mprasuite:latest
+apptainer pull oras://ghcr.io/tewhey-lab/mprasuite:latest
 ```
 <br>
 
