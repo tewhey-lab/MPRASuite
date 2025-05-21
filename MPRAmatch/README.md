@@ -137,7 +137,7 @@ Below is the provided content with parameters that can be substituted as needed.
 ##Input parameters for MPRAmatch
 
 export gitrepo_dir="/path/to/github/MPRASuite"
-#export mpra_container="/projects/tewhey-lab/images/MPRASuite-MPRAmatch_MPRAcount_v1.sif" (path on sumner)
+#export mpra_container="/projects/tewhey-lab/images/mprasuite_latest.sif" (path on sumner)
 export mpra_container="/path/to/the/sif_file/from/docker"
 
 export acc_file="/path/to/<library_name>_acc_id.txt"
