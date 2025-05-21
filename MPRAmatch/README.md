@@ -56,21 +56,21 @@ To ensure proper cloning of the repository, please examine the directory structu
 
 The MPRA image file contains all necessary tools and dependencies to run the analysis pipeline. For reproducibility, we strongly recommend using this container. Please note that the alignment step is specifically optimized for a particular version of minimap2. A complete list of all dependency versions is provided below.
 <br>
-R version 4.3.2
-jq-1.7
-cromwell 86
-womtool 86
-minimap2 2.17-r941 (deviating from 2.17 may require optimization of alignment settings)
-samtools 1.19.2
-FLASH v2.2.00 (FLASH2)
-preseq 3.2.0
-Bioconductor 3.18
-DESeq2 1.42.1
-qvalue 2.34.0
-dplyr 1.1.4
-ggplot2 3.4.4
-gridExtra 2.3
-reshape2 1.4.4
+- R version 4.3.2
+- jq-1.7
+- cromwell 86
+- womtool 86
+- minimap2 2.17-r941 (deviating from 2.17 may require optimization of alignment settings)
+- samtools 1.19.2
+- FLASH v2.2.00 (FLASH2)
+- preseq 3.2.0
+- Bioconductor 3.18
+- DESeq2 1.42.1
+- qvalue 2.34.0
+- dplyr 1.1.4
+- ggplot2 3.4.4
+- gridExtra 2.3
+- reshape2 1.4.4
 <br>
 To install a apptainer image please follow the below commands:
 
