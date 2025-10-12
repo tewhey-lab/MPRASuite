@@ -10,6 +10,7 @@ workflow MPRAmatch {
   Int? thread = 30 #Number of threads to be passed to FLASH2 and MiniMap2. Default to 30
   Int? mem = 30 #Memory to be passed to the sort function. Default to 30G
   Int? read_len = 250 #Length of reads that are being flashed. If mixed lengths use max.
+  Int? min_overlap = 10 #Minimum overlap passed to FLASH2
   Int? frag_len = 274 #Fragment length passed to FLASH2
   Int? seq_min = 100 #Minimum acceptable sequence length when separating the barcodes and oligos
   Int? enh_min = 50 #Minimum acceptable length for an oligo
@@ -30,6 +31,7 @@ workflow MPRAmatch {
                   flash_thread=thread,
                   read_len=read_len,
                   frag_len=frag_len,
+                  min_overlap=min_overlap,
                   id_out=id_out
                 }
   call Pull_Barcodes { input:
@@ -132,9 +134,10 @@ task Flash {
   Int read_len
   Int frag_len
   Int flash_thread
+  Int min_overlap
   String id_out
   command {
-    flash2 -r ${read_len} -f ${frag_len} -s 25 -o ${id_out}.merged -t ${flash_thread} ${read_a} ${read_b}
+    flash2 -r ${read_len} -f ${frag_len} -s 25 -m ${min_overlap} -o ${id_out}.merged -t ${flash_thread} ${read_a} ${read_b}
     }
   output {
     File out="${id_out}.merged.extendedFrags.fastq"
