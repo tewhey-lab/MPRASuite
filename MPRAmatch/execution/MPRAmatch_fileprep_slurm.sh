@@ -3,7 +3,6 @@
 #SBATCH -n 40
 #SBATCH --time=72:00:00
 #SBATCH --mem 200G
-#SBATCH --mail-user=harshpreet.chandok@jax.org	
 #SBATCH --mail-type=BEGIN,END,FAIL	
 #SBATCH --output=MPRAmatch-%x.%j.out
 #SBATCH --error=MPRAmatch-%x.%j.err	
