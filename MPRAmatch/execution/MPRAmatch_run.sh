@@ -2,39 +2,47 @@
 
 ##Check for singularity
 # Function to check if a command exists 
-command_exists () {
-    type "$1" &> /dev/null ;
-}
+command_exists() { command -v "$1" >/dev/null 2>&1; }
 
-#check if singularity path is provided by the user
+# ---- Diagnostic print ----
+printf 'singularity var = [%s]\n' "${singularity-<UNSET>}"
 
-if [ -n "${singularity}" ]; then
-  # Check if the file exists and is readable
-    if [ ! -r "${singularity}" ]; then
-        echo "exiting" 
-    fi    
-    if [ command_exists "${singularity}" ]; then
-        echo "Singularity found in PATH"
-        singularity="${singularity}"
-    fi    
-else
-#check if singularity is installed in the PATH
-    if command_exists singularity; then
-        singularity='singularity'
-
-#check if singularity is loaded as a module
-    elif command_exists which module; then
-        module_avail=$(module avail singularity 2>&1 | grep -i singularity)
-        if [[ "$module_avail" == *"singularity"* ]]; then
-            echo "Singularity module found. Loading module."
-            singularity="singularity"
-
-    elif [[ -x "/usr/local/bin/singularity" ]]; then
-        echo "Singularity found in /usr/local/bin."
-        singularity="/usr/local/bin/singularity"
+# If user provided a path/command name
+if [[ -n "${singularity-}" ]]; then
+  # If it's an absolute/relative path, require readable+executable
+  if [[ "$singularity" == */* ]]; then
+    if [[ ! -r "$singularity" || ! -x "$singularity" ]]; then
+      echo "Provided singularity path not readable/executable: $singularity"
+      exit 1
     fi
-fi 
+  else
+    # If it's just a name, require it to resolve on PATH
+    if ! command_exists "$singularity"; then
+      echo "Provided singularity command not found on PATH: $singularity"
+      exit 1
+    fi
+  fi
+
+else
+  # Discover singularity/Apptainer
+  if command_exists singularity; then
+    singularity=singularity
+  elif command_exists module && module avail -t 2>&1 | grep -qi '^singularity'; then
+    echo "Loading singularity module..."
+    module load singularity || { echo "Failed to load singularity module"; exit 1; }
+    singularity=singularity
+  elif [[ -x /usr/local/bin/singularity ]]; then
+    singularity=/usr/local/bin/singularity
+  elif command_exists apptainer; then
+    echo "Singularity not found; using Apptainer."
+    singularity=apptainer
+  else
+    echo "Singularity/Apptainer not found."
+    exit 1
+  fi
 fi
+
+echo "Using: $singularity"
 
 #####
 
