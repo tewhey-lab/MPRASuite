@@ -13,7 +13,7 @@ my $MAX_ENH_SIZE = $ARGV[8];
 my $bc_len = $ARGV[9];
 my $link_A_size = $ARGV[10];
 my $link_end_size = $ARGV[11];
-my $bc_offset = defined($ARGV[12]) ? $ARGV[12] : 0; # NEW: Barcode start offset (defaults to 0)
+my $bc_offset = defined($ARGV[12]) ? ($ARGV[12] - 1) : 0; # NEW: Barcode start offset (defaults to 0)
 
 open (FASTA, "$fasta") or die("ERROR: can not read file ($fasta): $!\n");
 open (MATCH, ">$out".".match") or die("ERROR: can not create $out .matched: $!\n");
