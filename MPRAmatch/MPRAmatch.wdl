@@ -18,7 +18,7 @@ workflow MPRAmatch {
   Int? bc_len = 20 #Length of barcodes used for project
   Int? bc_link_size = 38 #Length of adapter between barcode and oligo (include linker sequences)
   Int? end_link_size = 16 #Length of end adapter after oligo (5' end, include linker sequence)
-  Int? bc_offset = 0 #Starting position of barcode in the sequence (0-based). Default to 0
+  Int? bc_offset = 1 #Starting position of barcode in the sequence (0-based). Default to 0
   String working_directory #String of the directory relative to the WDL where the other required scripts live
   String out_directory #String of the directory that all files will be copied to
   String id_out #Project identifier - all files will have this as the prefix for their name
